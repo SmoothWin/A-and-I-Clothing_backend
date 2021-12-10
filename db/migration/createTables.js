@@ -25,7 +25,6 @@ con.connect(function(err) {
                     PRIMARY KEY (id)
                     )`, (err, result) =>{
                     if(err) {
-                      console.log(err)
                         console.error("Table 'users' already exists")
                     }else{
                     console.log("Table 'users' created")

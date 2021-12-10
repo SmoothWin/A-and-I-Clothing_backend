@@ -1,6 +1,6 @@
 const con = require('./connection')
 
-function insertBigOrders(userid,csvData){
+async function insertBigOrders(userid,csvData){
     let handledData = csvData.map(x=>[userid].concat(x))
     con.query({
         sql:'INSERT INTO '+
@@ -14,8 +14,8 @@ function insertBigOrders(userid,csvData){
             console.log(err)
             return false
         }
-        console.log("Hello: "+result)
-        return result
+        console.log(`Inserted ${handledData.length} rows of data`)
+        return "Big order has been processed and saved"
     })
 }
 

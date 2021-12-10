@@ -4,7 +4,7 @@
   "description": "backend for final external project for A & I clothing",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js",
     "create_tables": "node ./db/migration/createTables.js"
   },
@@ -25,5 +25,16 @@
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.15"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.4",
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
