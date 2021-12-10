@@ -1,0 +1,40 @@
+{
+  "name": "a-and-i-clothing_backend",
+  "version": "1.0.0",
+  "description": "backend for final external project for A & I clothing",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon index.js",
+    "create_tables": "node ./db/migration/createTables.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmoothWin/A-and-I-Clothing_backend.git"
+  },
+  "author": "GNU",
+  "bugs": {
+    "url": "https://github.com/SmoothWin/A-and-I-Clothing_backend/issues"
+  },
+  "homepage": "https://github.com/SmoothWin/A-and-I-Clothing_backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.4",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.4",
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
+}
