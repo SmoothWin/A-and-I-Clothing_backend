@@ -11,6 +11,8 @@ async function insertBigOrders(userid,csvData){
         if(err){
             if(err.errno == 1452)
                 console.log("user doesn't exist")
+            if(err.errno == 1366)
+                console.log("Quantity needs to be in non-decimal digits")
             console.log(err)
             return false
         }

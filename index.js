@@ -57,5 +57,3 @@ app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
 app.listen(port, ()=>{
     console.log(`A&I Clothing app backend listening on localhost:${port}`)
 })
-
-export default app
