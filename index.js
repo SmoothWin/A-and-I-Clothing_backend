@@ -24,6 +24,7 @@ app.use(cors());
 
 app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
     // console.log(req.file)
+    let dummyUserId = "tSNlDFl7Eey2WAhiZiwr7A=="
     if (!req.file) {
         return res.status(400).send("No files were uploaded.");
     }
@@ -33,12 +34,13 @@ app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
         await fs.createReadStream(req.file.path).pipe(csv())
                 .on('data', (data)=>results.push(data))
                 .on('end', async ()=>{
-                    console.log(results.map(x => Object.values(x)))
+                    // console.log(results.map(x => Object.values(x)))
                 await unlinkAsync(req.file.path)
                 if(results.length == 0)
                     return res.status(400).send("No orders were attached to the file")
-                console.log(results.length)
-                    message = bigorderSubmission("bruh",results.map(x => Object.values(x)))
+                // console.log(results.length)
+                    message = bigorderSubmission(dummyUserId, results.map(x => Object.values(x)))
+                    console.log(message)
                 if(message == false)
                     return res.status(400).send("Incorrect .csv format")
                 

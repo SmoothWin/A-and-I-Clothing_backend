@@ -5,14 +5,16 @@ function insertBigOrders(userid,csvData){
     con.query({
         sql:'INSERT INTO '+
             'big_orders (user_id, product, quantity, color, description_of_design)'+
-            `VALUES ?`,
+            ` VALUES ?`,
         timeout: 10000
     }, [handledData], (err, result)=>{
         if(err){
             if(err.errno == 1452)
                 console.log("user doesn't exist")
+            console.log(err)
             return false
         }
+        console.log("Hello: "+result)
         return result
     })
 }

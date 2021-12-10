@@ -27,14 +27,14 @@ con.connect(function(err) {
                     if(err) {
                       console.log(err)
                         console.error("Table 'users' already exists")
-                        return
-                        }
+                    }else{
                     console.log("Table 'users' created")
+                    }
                     })
       con.query(`CREATE TABLE big_orders (
                     id int NOT NULL AUTO_INCREMENT,
                     order_id varchar(40) UNIQUE NOT NULL default(TO_BASE64(UNHEX(REPLACE(UUID(),'-','')))),
-                    user_id varchar(40) UNIQUE NOT NULL,
+                    user_id varchar(40) NOT NULL,
                     product varchar(255) NOT NULL,
                     quantity int unsigned,
                     color varchar(255),
@@ -44,11 +44,25 @@ con.connect(function(err) {
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                     )`, (err, result) =>{
                       if(err) {
-                        console.log(err)
                         console.error("Table 'big_orders' already exists")
-                        return
-                        }
+                        }else{
                       console.log("Table 'big_orders' created")
-                    })
+                    }
+                  })
+      con.query({ //done for testing purposes remove in production
+        sql:
+        'INSERT INTO USERS(first_name, last_name, email, password, role, phone_country_code,'+
+                'phone_number, address, building_number, city, country, postal_code, organization_name)'+
+                ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        timeout:10000
+        }, ["DummyFN", "DummyLN", "email@email.com", "strongpassword123",
+         "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
+         , (err, result)=>{
+           if(err){
+              console.error("Dummy user already exists")
+           }else{
+             console.log("Dummy user created")
+           }
+         })
       con.end();
   });
