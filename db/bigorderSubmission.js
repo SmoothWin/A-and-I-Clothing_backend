@@ -1,10 +1,14 @@
 const con = require('./connection')
 
-async function insertBigOrders(userid,csvData){
+async function insertBigOrders(userid, csvData, test = false){
+    let table = "big_orders";
+    if(test){
+        table = "big_orders_test";
+    }
     let handledData = csvData.map(x=>[userid].concat(x))
     con.query({
         sql:'INSERT INTO '+
-            'big_orders (user_id, product, quantity, color, description_of_design)'+
+            `${table} (user_id, product, quantity, color, description_of_design)`+
             ` VALUES ?`,
         timeout: 10000
     }, [handledData], (err, result)=>{

@@ -24,7 +24,7 @@ app.use(cors());
 
 app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
     // console.log(req.file)
-    let dummyUserId = "tSNlDFl7Eey2WAhiZiwr7A=="
+    let dummyUserId = "tSNlDFl7Eey2WAhiZiwr7A==" //to remove in production
     if (!req.file) {
         return res.status(400).send({"message":"No files were uploaded."});
     }
@@ -57,3 +57,5 @@ app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
 app.listen(port, ()=>{
     console.log(`A&I Clothing app backend listening on localhost:${port}`)
 })
+
+module.exports = app
