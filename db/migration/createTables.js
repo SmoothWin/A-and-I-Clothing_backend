@@ -7,7 +7,7 @@ con.connect(function(err) {
     
     con.query(`CREATE TABLE users (
                     id int NOT NULL AUTO_INCREMENT,
-                    user_id varchar(40) UNIQUE NOT NULL default(TO_BASE64(UNHEX(REPLACE(UUID(),'-','')))),
+                    user_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
                     first_name varchar(35) NOT NULL,
                     last_name varchar(35) NOT NULL,
                     email varchar(255) UNIQUE NOT NULL,
@@ -32,7 +32,7 @@ con.connect(function(err) {
                     })
       con.query(`CREATE TABLE big_orders (
                     id int NOT NULL AUTO_INCREMENT,
-                    order_id varchar(40) UNIQUE NOT NULL default(TO_BASE64(UNHEX(REPLACE(UUID(),'-','')))),
+                    order_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
                     user_id varchar(40) NOT NULL,
                     product varchar(255) NOT NULL,
                     quantity int unsigned,

@@ -4,7 +4,7 @@
   "description": "backend for final external project for A & I clothing",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "nodemon index.js",
     "create_tables": "node ./db/migration/createTables.js"
   },
