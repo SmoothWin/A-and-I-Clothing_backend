@@ -50,11 +50,11 @@ con.connect(function(err) {
                   })
       con.query({ //done for testing purposes remove in production
         sql:
-        'INSERT INTO USERS(first_name, last_name, email, password, role, phone_country_code,'+
+        'INSERT INTO USERS(user_id, first_name, last_name, email, password, role, phone_country_code,'+
                 'phone_number, address, building_number, city, country, postal_code, organization_name)'+
-                ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         timeout:10000
-        }, ["DummyFN", "DummyLN", "email@email.com", "strongpassword123",
+        }, ["1b55e0565af111ec99de0862662c2bec","DummyFN", "DummyLN", "email@email.com", "strongpassword123",
          "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
          , (err, result)=>{
            if(err){

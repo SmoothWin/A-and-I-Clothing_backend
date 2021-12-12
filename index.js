@@ -22,12 +22,14 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors());
 
+let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
+
 app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
     
     const results = []
     let message
     // console.log(req.file)
-    let dummyUserId = "tSNlDFl7Eey2WAhiZiwr7A==" //to remove in production
+    
     if (!req.file) {
         return res.status(400).send({"message":"No files were uploaded."});
     }
