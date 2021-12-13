@@ -4,9 +4,10 @@
   "description": "backend for final external project for A & I clothing",
   "main": "index.js",
   "scripts": {
-    "test": "node ./db/migration/createTables.js && jest --coverage",
+    "test": "jest --coverage",
     "start": "nodemon index.js",
-    "create_tables": "node ./db/migration/createTables.js"
+    "create_tables": "node ./db/migration/createTables.js",
+    "create_test_tables": "node ./db/migration/createTablesTest.js"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,8 @@
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/db/migration"
     ]
   }
 }

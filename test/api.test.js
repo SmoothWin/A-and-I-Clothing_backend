@@ -1,23 +1,32 @@
-const app = require('../index')
-
+const app = require('../indexTest')
+const createTestTables = require('../db/migration/createTablesTest')
+const conTest = require('../db/connection').test
 const supertest = require('supertest')
 const request = supertest(app)
 const fs = require('fs')
 
 const buffer_ok =
-  fs.readFileSync(__dirname+'\\bigorders\\upload\\bigorder_ok.csv');
+  fs.readFileSync(__dirname+'//bigorders/upload/bigorder_ok.csv');
 
 const buffer_no_data = 
-  fs.readFileSync(__dirname+'\\bigorders\\upload\\bigorder_no_extra_data.csv');
+  fs.readFileSync(__dirname+'/bigorders/upload/bigorder_no_extra_data.csv');
 
 const buffer_quantity_not_int = 
-  fs.readFileSync(__dirname+'\\bigorders\\upload\\bigorder_quantity_not_integer.csv');
+  fs.readFileSync(__dirname+'/bigorders/upload/bigorder_quantity_not_integer.csv');
+
+beforeAll(()=>{
+  createTestTables()
+})
+
 
 describe('/POST /bigorders/upload csv upload', () => {
     it('Submitting .csv file should be successful', async () => {
       const res = await request.post('/bigorders/upload')
       .attach("file", buffer_ok, "bigorder_ok.csv")
       // expect(insertBigOrderSuccess.mock.calls.length).toBe(1)
+      conTest.query({
+        sql:"DELETE FROM big_orders"
+      })
       expect(res.statusCode).toBe(200)
       // console.log(res.body)
     })

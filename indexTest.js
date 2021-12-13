@@ -11,7 +11,7 @@ const multer = require('multer')
 const cors = require('cors');
 
 //custom files
-const bigorderSubmission = require('./db/bigorderSubmission').insert
+const bigorderSubmission = require('./db/bigorderSubmission').test
 
 const app = express()
 const port = process.env.SERVER_PORT
@@ -64,7 +64,9 @@ app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
     
     }catch(e){
         // console.log(e)
+    /* istanbul ignore next */
         await unlinkAsync(req.file.path)
+    /* istanbul ignore next */
         return res.status(400).send({"message":"Something went wrong with reading the file"})
     }
 })
