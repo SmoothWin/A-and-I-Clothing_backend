@@ -1,9 +1,9 @@
 const conTest = require('./connection').test
 const con = require('./connection').con
 
+const table = "big_orders";
     /* istanbul ignore next */
 async function insertBigOrders(userid, csvData){
-    let table = "big_orders";
     let handledData = csvData.map(x=>[userid].concat(x))
     const query = new Promise((resolve)=>{
         con.query({
@@ -28,7 +28,6 @@ async function insertBigOrders(userid, csvData){
 
 //test version
 async function insertBigOrdersTest(userid, csvData){
-    let table = "big_orders";
     
     let handledData = csvData.map(x=>[userid].concat(x))
     const query = new Promise((resolve)=>{
