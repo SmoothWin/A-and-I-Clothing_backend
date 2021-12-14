@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const cors = require('cors');
 
 //custom files
 const bigorderSubmission = require('../db/bigorderSubmission').insert
