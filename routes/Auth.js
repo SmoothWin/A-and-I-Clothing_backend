@@ -24,11 +24,33 @@ router.post('/register', async (req, res) => {
             city, country, postalCode, (organizationName != '')?organizationName:null, null);
             
         const savedUser = await authentication.insertUser(user)
+        console.log(savedUser)
+        // if(typeof savedUser == "Error")
+        // throw savedUser
         res.json(savedUser);
     } catch(e) {
-        console.log(e)
-        res.json({ message: "Error"});
+        res.status(400).json({ message: "Error"});
     }
 });
+
+router.post('/login', async (req, res) => {
+    const {email, password} = req.body
+    const user = await authentication.getUserInfo(email, password)
+    console.log(user)
+    
+    try{
+        const match = await bcrypt.compare(password, user.password);
+        const accessToken = jwt.sign(JSON.stringify(user), process.env.TOKEN_SECRET)
+        if(match){
+            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none"}).json({ message: "Logged in" });
+        } else {
+            res.json({ message: "Invalid Credentials" });
+        }
+    } catch(e) {
+        res.json({message: "Invalid Credentials"})
+    }
+});
+
+
 
 module.exports = router
