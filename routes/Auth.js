@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
     
     try{
         const match = await bcrypt.compare(password, user.password);
-        const accessToken = jwt.sign(JSON.stringify(user), process.env.TOKEN_SECRET)
+        const accessToken = jwt.sign(JSON.stringify(user.user), process.env.TOKEN_SECRET)
         if(match){
             res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none"}).json({ message: "Logged in" });
         } else {
