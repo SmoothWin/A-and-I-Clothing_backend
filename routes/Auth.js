@@ -3,12 +3,19 @@ const router = express.Router()
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Joi = require('joi')
 
 //custom imports
 const User = require('../db/models/user')
 const authentication = require('../db/authentication')
 
 router.post('/register', async (req, res) => {
+    const schema = Joi.object({
+        firstName:Joi.string().length(35).regex(/^[A-Za-z]+$/),
+        lastName:Joi.string().length(35).regex(/^[A-Za-z]+$/),
+        email:Joi.string().email({ minDomainSegments: 2}),
+        phoneCountryCode:Joi.string().regex(//)
+    })
     try {
         console.log(req.body)
         const {firstName, lastName, email, password,
