@@ -8,7 +8,6 @@ const Joi = require('joi')
 //custom imports
 const User = require('../db/models/user')
 const authentication = require('../db/authentication')
-const { escape } = require('mysql2')
 
 router.post('/register', async (req, res) => {
     try {
@@ -30,10 +29,10 @@ router.post('/register', async (req, res) => {
         if(password != confirmpassword)
          throw new Error("Passwords don't match")
        
-        const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/,"") //to pass into the sql
+        const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/g,"") //to pass into the sql
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = new User(null, firstName, lastName, email, hashedPassword,
+        
+        const user = new User(null, toCapitalThenLower(firstName), toCapitalThenLower(lastName), email, hashedPassword,
             "customer", phoneCountryCode, modifiedPhoneNumber, address, (buildingNumber != '')?buildingNumber:null,
             city, country, postalCode, (organizationName != '')?organizationName:null, null);
             
@@ -73,6 +72,15 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
+/**
+ * @param {string} value //value to pass in order to follow this format: aptitude -> Aptitude
+ */
+function toCapitalThenLower(value){
+    let v = value.toLowerCase()
+    let vString = v.substring(1)
+    let vChar = v[0].toUpperCase()
+    return vChar+vString
+}
+toCapitalThenLower("vAlUe")
 
 module.exports = router
