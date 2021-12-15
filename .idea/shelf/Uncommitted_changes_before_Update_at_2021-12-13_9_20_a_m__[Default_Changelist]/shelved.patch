@@ -1,0 +1,46 @@
+Index: index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>require('dotenv').config()\r\n\r\nconst csv = require('csv-parser')\r\nconst fs = require('fs')\r\nconst {promisify} = require('util')\r\n\r\nconst unlinkAsync = promisify(fs.unlink)\r\n\r\nconst express = require('express')\r\nconst multer = require('multer')\r\nconst cors = require('cors');\r\n\r\n//custom files\r\nconst bigorderSubmission = require('./db/bigorderSubmission')\r\n\r\nconst app = express()\r\nconst port = process.env.SERVER_PORT\r\n\r\nconst upload = multer({ dest: 'uploads/tmp/bigorders' });\r\n\r\napp.use(express.json())\r\napp.use(express.urlencoded({extended: true}))\r\napp.use(cors());\r\n\r\napp.post('/bigorders/upload', upload.single('file'), async (req, res)=>{\r\n    // console.log(req.file)\r\n    let dummyUserId = \"tSNlDFl7Eey2WAhiZiwr7A==\"\r\n    if (!req.file) {\r\n        return res.status(400).send({\"message\":\"No files were uploaded.\"});\r\n    }\r\n    try{\r\n        let results = []\r\n        let message = \"\"\r\n        await fs.createReadStream(req.file.path).pipe(csv())\r\n                .on('data', (data)=>results.push(data))\r\n                .on('end', async ()=>{\r\n                    // console.log(results.map(x => Object.values(x)))\r\n                await unlinkAsync(req.file.path)\r\n                if(results.length == 0)\r\n                    return res.status(400).send({\"message\":\"No orders were attached to the file\"})\r\n                // console.log(results.length)\r\n                message = bigorderSubmission(dummyUserId, results.map(x => Object.values(x)))\r\n                    // console.log(message)\r\n                if(message == false)\r\n                    return res.status(400).send({\"message\":\"Incorrect .csv format\"})\r\n                \r\n                return res.status(200).send({\"message\": \"Big order reviewed and submitted\"});\r\n                })\r\n    \r\n    }catch(e){\r\n        console.log(e)\r\n        await unlinkAsync(req.file.path)\r\n        return res.status(400).send({\"message\":\"Something went wrong with reading the file\"})\r\n    }\r\n})\r\n\r\napp.listen(port, ()=>{\r\n    console.log(`A&I Clothing app backend listening on localhost:${port}`)\r\n})
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/index.js b/index.js
+--- a/index.js	(revision 3514dded1721430aad98d610fbc16f1d809a5d27)
++++ b/index.js	(date 1639155340880)
+@@ -14,7 +14,7 @@
+ const bigorderSubmission = require('./db/bigorderSubmission')
+ 
+ const app = express()
+-const port = process.env.SERVER_PORT
++const port = process.env.SERVER_PORT || 8000
+ 
+ const upload = multer({ dest: 'uploads/tmp/bigorders' });
+ 
+@@ -24,7 +24,7 @@
+ 
+ app.post('/bigorders/upload', upload.single('file'), async (req, res)=>{
+     // console.log(req.file)
+-    let dummyUserId = "tSNlDFl7Eey2WAhiZiwr7A=="
++    let dummyUserId = "rJPkGVnYEey5TcAlpST1jA=="
+     if (!req.file) {
+         return res.status(400).send({"message":"No files were uploaded."});
+     }
+Index: db/migration/createTables.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const con = require('../connection')\r\n\r\ncon.connect(function(err) {\r\n    console.log(process.env.DB_HOST)\r\n    if (err) throw err;\r\n    console.log(\"Connected!\");\r\n    \r\n    con.query(`CREATE TABLE users (\r\n                    id int NOT NULL AUTO_INCREMENT,\r\n                    user_id varchar(40) UNIQUE NOT NULL default(TO_BASE64(UNHEX(REPLACE(UUID(),'-','')))),\r\n                    first_name varchar(35) NOT NULL,\r\n                    last_name varchar(35) NOT NULL,\r\n                    email varchar(255) UNIQUE NOT NULL,\r\n                    password varchar(255) NOT NULL,\r\n                    role varchar(10) NOT NULL,\r\n                    phone_country_code varchar(15) NOT NULL,\r\n                    phone_number varchar(10) NULL DEFAULT NULL,\r\n                    address varchar(255) NOT NULL,\r\n                    building_number varchar(10) NULL DEFAULT NULL,\r\n                    city varchar(200) NOT NULL,\r\n                    country varchar(90) NOT NULL,\r\n                    postal_code varchar(32) NOT NULL,\r\n                    organization_name varchar(255) NULL DEFAULT NULL,\r\n                    date_time DATETIME DEFAULT CURRENT_TIMESTAMP,\r\n                    PRIMARY KEY (id)\r\n                    )`, (err, result) =>{\r\n                    if(err) {\r\n                        console.error(\"Table 'users' already exists\")\r\n                    }else{\r\n                    console.log(\"Table 'users' created\")\r\n                    }\r\n                    })\r\n      con.query(`CREATE TABLE big_orders (\r\n                    id int NOT NULL AUTO_INCREMENT,\r\n                    order_id varchar(40) UNIQUE NOT NULL default(TO_BASE64(UNHEX(REPLACE(UUID(),'-','')))),\r\n                    user_id varchar(40) NOT NULL,\r\n                    product varchar(255) NOT NULL,\r\n                    quantity int unsigned,\r\n                    color varchar(255),\r\n                    description_of_design text null default null,\r\n                    date_time DATETIME DEFAULT CURRENT_TIMESTAMP,\r\n                    PRIMARY KEY (id),\r\n                    FOREIGN KEY (user_id) REFERENCES users(user_id)\r\n                    )`, (err, result) =>{\r\n                      if(err) {\r\n                        console.error(\"Table 'big_orders' already exists\")\r\n                        }else{\r\n                      console.log(\"Table 'big_orders' created\")\r\n                    }\r\n                  })\r\n      con.query({ //done for testing purposes remove in production\r\n        sql:\r\n        'INSERT INTO USERS(first_name, last_name, email, password, role, phone_country_code,'+\r\n                'phone_number, address, building_number, city, country, postal_code, organization_name)'+\r\n                ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',\r\n        timeout:10000\r\n        }, [\"DummyFN\", \"DummyLN\", \"email@email.com\", \"strongpassword123\",\r\n         \"customer\", \"1\",\"4444444444\", \"115 element\", null, \"A city\", \"A country\", \"2j3mkj\", null, ]\r\n         , (err, result)=>{\r\n           if(err){\r\n              console.error(\"Dummy user already exists\")\r\n           }else{\r\n             console.log(\"Dummy user created\")\r\n           }\r\n         })\r\n      con.end();\r\n  });
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/db/migration/createTables.js b/db/migration/createTables.js
+--- a/db/migration/createTables.js	(revision 3514dded1721430aad98d610fbc16f1d809a5d27)
++++ b/db/migration/createTables.js	(date 1639154371213)
+@@ -1,7 +1,6 @@
+ const con = require('../connection')
+ 
+ con.connect(function(err) {
+-    console.log(process.env.DB_HOST)
+     if (err) throw err;
+     console.log("Connected!");
+     
