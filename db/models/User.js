@@ -3,15 +3,14 @@ const schema = Joi.object({
     firstName:Joi.string().min(2).regex(/^[A-Za-z]+$/).required(),
     lastName:Joi.string().min(2).regex(/^[A-Za-z]+$/).required(),
     email:Joi.string().email({ minDomainSegments: 2}).required(),
-    password:Joi.string().regex(/"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"/),
-    phoneCountryCode:Joi.string().regex(/^[0-9]{3}$/).required(),
+    phoneCountryCode:Joi.string().regex(/^[0-9]{1,3}$/).required(),
     phoneNumber: Joi.string().length(10).regex(/\d{10}/).required(),
     address: Joi.string().regex(/\d{1,}(\s{1}\w{1,})(\s{1}?\w{1,})+/).required(),
-    buildingNumber: Joi.string().regex(/[0-9]+/),
+    buildingNumber: Joi.string().allow(null).regex(/[0-9]+/),
     city:Joi.string().regex(/^[a-zA-Z\u0080-\u024F\s\/\-\)\(\`\.\"\']+$/).required(),
     country:Joi.string().regex(/[a-zA-Z]{2,}/).required(),
-    postalCode:Joi.string().required(),
-    organizationName:Joi.string().alphanum()
+    postalCode:Joi.string().min(5).required(),
+    organizationName:Joi.string().allow(null).min(2)
 })
 
 class User{
@@ -24,7 +23,6 @@ class User{
             firstName:firstName,
             lastName:lastName,
             email:email,
-            password:password,
             phoneCountryCode:phoneCountryCode,
             phoneNumber:phoneNumber,
             address:address,
