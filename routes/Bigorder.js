@@ -24,7 +24,9 @@ router.post('/upload', upload.single('file'), async (req, res)=>{
     if (!req.file) {
         return res.status(400).send({"message":"No files were uploaded."});
     }
+    if (req.file)
     try{
+        let invalidFile = false;
         fs.createReadStream(req.file.path).pipe(csv())
                 .on('data', (data)=> {
                     let value = {
@@ -33,13 +35,20 @@ router.post('/upload', upload.single('file'), async (req, res)=>{
                         "color":data["color"],
                         "description of design":data["description of design"]
                     }
-                   
+                    if(typeof data["product"] == "undefined",
+                        typeof data["quantity"] == "undefined",
+                        typeof data["color"] == "undefined",
+                        typeof data["description of design"] == "undefined")
+                        invalidFile = true;
                     results.push(value)
                     // console.log(results)
                 })
                 .on('end', async ()=>{
                     // console.log(results.map(x => Object.values(x)))
                 await unlinkAsync(req.file.path)
+                if(invalidFile){
+                    return res.status(400).send({"message":"Something is wrong with the file"})
+                }
                 // console.log(results.length)
                 message = await bigorderSubmission(dummyUserId, results.map(x => Object.values(x)))
                 console.log(message.result)

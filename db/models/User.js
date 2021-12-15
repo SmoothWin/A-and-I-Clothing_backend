@@ -19,7 +19,7 @@ class User{
                 buildingNumber, city, country, postalCode,
                 organizationName, dateTime){
         
-        schema.validate
+        // schema.validate
 
         this.userId = userId;
         this.firstName = firstName;
