@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
             password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
         })
         const result = schemaPass.validate({password:password})
-        
+
         if(result.error)
         throw new Error("Password is invalid")
 
@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
         const savedUser = await authentication.insertUser(user)
         console.log(savedUser)
 
-        return res.json(savedUser);
+        return res.json(savedUser.result);
     } catch(e) {
         console.log("\n"+e.message)
         res.status(400).json({ message: "Error"});
@@ -49,19 +49,27 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const {email, password} = req.body
-    const user = await authentication.getUserInfo(email, password)
-    console.log(user)
-    
+    const schema = Joi.object({
+        email:Joi.string().email({ minDomainSegments: 2}).required(),
+        password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+    })
     try{
+        const validationResult = schema.validate({email:email, password:password})
+        if(validationResult.error)
+            throw new Error(validationResult.error)
+        const user = await authentication.getUserInfo(email, password)
+        console.log(user)
+    
         const match = await bcrypt.compare(password, user.password);
         const accessToken = jwt.sign(JSON.stringify(user.user), process.env.TOKEN_SECRET)
         if(match){
-            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none"}).json({ message: "Logged in" });
+            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none"}).json({"message":"Welcome"});
         } else {
-            res.json({ message: "Invalid Credentials" });
+            throw new Error("Invalid Credentials")
         }
     } catch(e) {
-        res.json({message: "Invalid Credentials"})
+        console.log(e.message)
+        res.status(400).json({message: "Invalid Credentials"})
     }
 });
 
