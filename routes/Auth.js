@@ -10,12 +10,6 @@ const User = require('../db/models/user')
 const authentication = require('../db/authentication')
 
 router.post('/register', async (req, res) => {
-    const schema = Joi.object({
-        firstName:Joi.string().length(35).regex(/^[A-Za-z]+$/),
-        lastName:Joi.string().length(35).regex(/^[A-Za-z]+$/),
-        email:Joi.string().email({ minDomainSegments: 2}),
-        phoneCountryCode:Joi.string().regex(//)
-    })
     try {
         console.log(req.body)
         const {firstName, lastName, email, password,
@@ -23,11 +17,11 @@ router.post('/register', async (req, res) => {
                 address, buildingNumber, city, country,
                 postalCode, organizationName
          } = req.body;
-
+        const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/,"") //to pass into the sql
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User(null, firstName, lastName, email, hashedPassword,
-            "customer", phoneCountryCode, phoneNumber, address, (buildingNumber != '')?buildingNumber:null,
+            "customer", phoneCountryCode, modifiedPhoneNumber, address, (buildingNumber != '')?buildingNumber:null,
             city, country, postalCode, (organizationName != '')?organizationName:null, null);
             
         const savedUser = await authentication.insertUser(user)

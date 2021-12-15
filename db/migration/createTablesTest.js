@@ -12,7 +12,7 @@ con.connect(function(err) {
                     email varchar(255) UNIQUE NOT NULL,
                     password varchar(255) NOT NULL,
                     role varchar(10) NOT NULL,
-                    phone_country_code varchar(15) NOT NULL,
+                    phone_country_code varchar(3) NOT NULL,
                     phone_number varchar(10) NULL DEFAULT NULL,
                     address varchar(255) NOT NULL,
                     building_number varchar(10) NULL DEFAULT NULL,
