@@ -65,4 +65,5 @@ con.connect(function(err) {
          })
   });
 }
+createTestTables()
 module.exports = createTestTables
