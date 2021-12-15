@@ -1,8 +1,9 @@
 const Joi = require('joi')
 const schema = Joi.object({
-    firstName:Joi.string().regex(/^[A-Za-z]+$/).required(),
-    lastName:Joi.string().regex(/^[A-Za-z]+$/).required(),
+    firstName:Joi.string().min(2).regex(/^[A-Za-z]+$/).required(),
+    lastName:Joi.string().min(2).regex(/^[A-Za-z]+$/).required(),
     email:Joi.string().email({ minDomainSegments: 2}).required(),
+    password:Joi.string().regex(/"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"/),
     phoneCountryCode:Joi.string().regex(/^[0-9]{3}$/).required(),
     phoneNumber: Joi.string().length(10).regex(/\d{10}/).required(),
     address: Joi.string().regex(/\d{1,}(\s{1}\w{1,})(\s{1}?\w{1,})+/).required(),
@@ -19,7 +20,22 @@ class User{
                 buildingNumber, city, country, postalCode,
                 organizationName, dateTime){
         
-        // schema.validate
+        let result = schema.validate({
+            firstName:firstName,
+            lastName:lastName,
+            email:email,
+            password:password,
+            phoneCountryCode:phoneCountryCode,
+            phoneNumber:phoneNumber,
+            address:address,
+            buildingNumber:buildingNumber,
+            city:city,
+            country:country,
+            postalCode:postalCode,
+            organizationName:organizationName
+        })
+        if(result.error)
+            throw new Error(result.error)
 
         this.userId = userId;
         this.firstName = firstName;

@@ -8,15 +8,18 @@ const Joi = require('joi')
 //custom imports
 const User = require('../db/models/user')
 const authentication = require('../db/authentication')
+const { escape } = require('mysql2')
 
 router.post('/register', async (req, res) => {
     try {
         console.log(req.body)
-        const {firstName, lastName, email, password,
+        const {firstName, lastName, email, password, confirmpassword,
                 phoneCountryCode, phoneNumber,
                 address, buildingNumber, city, country,
                 postalCode, organizationName
          } = req.body;
+        if(password != confirmpassword)
+         return res.status(400).json({message: "Error"})
         const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/,"") //to pass into the sql
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -28,8 +31,9 @@ router.post('/register', async (req, res) => {
         console.log(savedUser)
         // if(typeof savedUser == "Error")
         // throw savedUser
-        res.json(savedUser);
+        return res.json(savedUser);
     } catch(e) {
+        console.log("\n"+e.message)
         res.status(400).json({ message: "Error"});
     }
 });
