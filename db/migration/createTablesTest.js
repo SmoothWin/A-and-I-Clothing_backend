@@ -1,5 +1,5 @@
 function createTestTables(){
-const con = require('../connection').test
+const con = require('../connection')
 con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
@@ -42,7 +42,7 @@ con.connect(function(err) {
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                     )`, (err, result) =>{
                       if(err) {
-                        console.log(err)
+                        // console.log(err)
                         console.log("Table 'big_orders' already exists")
                         }else{
                       console.log("Table 'big_orders' created")
@@ -53,9 +53,9 @@ con.connect(function(err) {
         'INSERT INTO USERS(user_id, first_name, last_name, email, password, role, phone_country_code,'+
                 'phone_number, address, building_number, city, country, postal_code, organization_name)'+
                 ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        timeout:10000
-        }, ["1b55e0565af111ec99de0862662c2bec","DummyFN", "DummyLN", "email@email.com", "strongpassword123",
-         "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
+        timeout:10000                                                       //Asd1234567890$
+        }, ["2c0633d05dfe11ecbfc90862662c2bec","Ch", "Ch", "email5@a.com", "$2b$10$VgdxaqjOXhvu53/xFLZOYeK3h2IPdGv2qVWNMa0NllaDo0J4LVqqS",
+         "customer", "1","3423244321", "32 street boulevard", null, "Pr", "Da", "s1232", null, ]
          , (err, result)=>{
            if(err){
               console.log("Dummy user already exists")

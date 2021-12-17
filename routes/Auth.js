@@ -11,7 +11,7 @@ const authentication = require('../db/authentication')
 
 router.post('/register', async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const {firstName, lastName, email, password, confirmpassword,
                 phoneCountryCode, phoneNumber,
                 address, buildingNumber, city, country,
@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
         const schemaPass = Joi.object({
             password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
         })
-        const result = schemaPass.validate({password:password})
+        const result = schemaPass.validate({password:password.trim()})
 
         if(result.error)
         throw new Error("Password is invalid")
@@ -30,18 +30,18 @@ router.post('/register', async (req, res) => {
          throw new Error("Passwords don't match")
        
         const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/g,"") //to pass into the sql
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password.trim(), 10);
         
-        const user = new User(null, toCapitalThenLower(firstName), toCapitalThenLower(lastName), email, hashedPassword,
-            "customer", phoneCountryCode, modifiedPhoneNumber, address, (buildingNumber != '')?buildingNumber:null,
-            city, country, postalCode, (organizationName != '')?organizationName:null, null);
+        const user = new User(null, toCapitalThenLower(firstName.trim()), toCapitalThenLower(lastName.trim()), email.trim(), hashedPassword,
+            "customer", phoneCountryCode.trim(), modifiedPhoneNumber.trim(), address.trim(), (buildingNumber != '')?buildingNumber:null,
+            city.trim(), country.trim(), postalCode.trim(), (organizationName != '')?organizationName:null, null);
             
         const savedUser = await authentication.insertUser(user)
-        console.log(savedUser)
+        // console.log(savedUser)
 
-        return res.json(savedUser.result);
+        return res.status(201).json(savedUser.result);
     } catch(e) {
-        console.log("\n"+e.message)
+        // console.log("\n"+e.message)
         res.status(400).json({ message: "Error"});
     }
 });
@@ -62,6 +62,8 @@ router.post('/login', async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
         if(match){
+            console.log(process.env.APP_ENVIRONMENT)
+            /* istanbul ignore next */
             if(process.env.APP_ENVIRONMENT == "development")
             res.cookie("token", accessToken,{httpOnly:true,secure:false,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
             else
@@ -70,7 +72,7 @@ router.post('/login', async (req, res) => {
             throw new Error("Invalid Credentials")
         }
     } catch(e) {
-        console.log(e.message)
+        // console.log(e.message)
         res.status(400).json({message: "Invalid Credentials"})
     }
 });

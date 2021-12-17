@@ -6,9 +6,9 @@ const schema = Joi.object({
     phoneCountryCode:Joi.string().regex(/^[0-9]{1,3}$/).required(),
     phoneNumber: Joi.string().length(10).regex(/\d{10}/).required(),
     address: Joi.string().regex(/\d{1,}(\s{1}\w{1,})(\s{1}?\w{1,})+/).required(),
-    buildingNumber: Joi.string().allow(null).regex(/[0-9]+/),
+    buildingNumber: Joi.string().allow(null).regex(/^[0-9]+$/),
     city:Joi.string().regex(/^[a-zA-Z\u0080-\u024F\s\/\-\)\(\`\.\"\']+$/).required(),
-    country:Joi.string().regex(/[a-zA-Z]{2,}/).required(),
+    country:Joi.string().regex(/^[a-zA-Z]{2,}$/).required(),
     postalCode:Joi.string().min(5).required(),
     organizationName:Joi.string().allow(null).min(2)
 })

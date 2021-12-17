@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 //custom files
-const bigorderSubmission = require('../db/bigorderSubmission').insert
+const bigorderSubmission = require('../db/bigorderSubmission')
 const tokenChecker = require('../middleware/tokenChecker')
 const multer = require('multer')
 
@@ -11,7 +11,9 @@ const fs = require('fs')
 const {promisify} = require('util')
 
 const unlinkAsync = promisify(fs.unlink)
-const upload = multer({ dest: '../uploads/tmp/bigorders' });
+const upload = multer({ dest: '../uploads/tmp/bigorders',
+                    limits:{files:1, fileSize:1024*1024},
+                    fileFilter: ['text/csv']});
 
 
 let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
