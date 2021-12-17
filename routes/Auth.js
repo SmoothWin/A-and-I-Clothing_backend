@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
         const schemaPass = Joi.object({
             password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
         })
-        const result = schemaPass.validate({password:password})
+        const result = schemaPass.validate({password:password.trim()})
 
         if(result.error)
         throw new Error("Password is invalid")
@@ -30,11 +30,11 @@ router.post('/register', async (req, res) => {
          throw new Error("Passwords don't match")
        
         const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/g,"") //to pass into the sql
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password.trim(), 10);
         
-        const user = new User(null, toCapitalThenLower(firstName), toCapitalThenLower(lastName), email, hashedPassword,
-            "customer", phoneCountryCode, modifiedPhoneNumber, address, (buildingNumber != '')?buildingNumber:null,
-            city, country, postalCode, (organizationName != '')?organizationName:null, null);
+        const user = new User(null, toCapitalThenLower(firstName.trim()), toCapitalThenLower(lastName.trim()), email.trim(), hashedPassword,
+            "customer", phoneCountryCode.trim(), modifiedPhoneNumber.trim(), address.trim(), (buildingNumber != '')?buildingNumber.trim():null,
+            city.trim(), country.trim(), postalCode.trim(), (organizationName != '')?organizationName.trim():null, null);
             
         const savedUser = await authentication.insertUser(user)
         console.log(savedUser)
