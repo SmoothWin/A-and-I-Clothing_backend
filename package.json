@@ -20,6 +20,7 @@
   "homepage": "https://github.com/SmoothWin/A-and-I-Clothing_backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "dotenv": "^10.0.0",
