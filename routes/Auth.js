@@ -33,8 +33,8 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password.trim(), 10);
         
         const user = new User(null, toCapitalThenLower(firstName.trim()), toCapitalThenLower(lastName.trim()), email.trim(), hashedPassword,
-            "customer", phoneCountryCode.trim(), modifiedPhoneNumber.trim(), address.trim(), (buildingNumber != '')?buildingNumber.trim():null,
-            city.trim(), country.trim(), postalCode.trim(), (organizationName != '')?organizationName.trim():null, null);
+            "customer", phoneCountryCode.trim(), modifiedPhoneNumber.trim(), address.trim(), (buildingNumber != '')?buildingNumber:null,
+            city.trim(), country.trim(), postalCode.trim(), (organizationName != '')?organizationName:null, null);
             
         const savedUser = await authentication.insertUser(user)
         console.log(savedUser)
