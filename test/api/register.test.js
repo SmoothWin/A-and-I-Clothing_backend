@@ -1,0 +1,5 @@
+const app = require('../../index')
+const createTestTables = require('../../db/migration/createTablesTest')
+const conTest = require('../../db/connection')
+const supertest = require('supertest')
+const request = supertest(app)

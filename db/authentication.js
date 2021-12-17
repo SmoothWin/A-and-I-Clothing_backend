@@ -1,6 +1,5 @@
 const User = require('../db/models/user')
-const conTest = require('./connection').test
-const con = require('./connection').con
+const con = require('./connection')
 
 /**
  * @param {User} user The user object
@@ -55,5 +54,4 @@ function getUser(email){
 module.exports = {
     insertUser:registerUser,
     getUserInfo:getUser
-    // test:registerUserTest,
 }

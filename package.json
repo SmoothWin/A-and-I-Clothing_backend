@@ -4,8 +4,8 @@
   "description": "backend for final external project for A & I clothing",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
-    "start": "nodemon index.js",
+    "test": "cross-env TEST_ENVIRONMENT=testing jest --coverage",
+    "start": "cross-env APP_ENVIRONMENT=development nodemon index.js",
     "create_tables": "node ./db/migration/createTables.js",
     "create_test_tables": "node ./db/migration/createTablesTest.js"
   },
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
+    "cross-env": "^7.0.3",
     "jest": "^27.4.4",
     "supertest": "^6.1.6"
   },

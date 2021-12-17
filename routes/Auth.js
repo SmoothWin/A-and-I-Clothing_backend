@@ -62,6 +62,7 @@ router.post('/login', async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
         if(match){
+            console.log(process.env.APP_ENVIRONMENT)
             if(process.env.APP_ENVIRONMENT == "development")
             res.cookie("token", accessToken,{httpOnly:true,secure:false,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
             else

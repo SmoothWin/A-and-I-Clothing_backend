@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 //custom files
-const bigorderSubmission = require('../db/bigorderSubmission').insert
+const bigorderSubmission = require('../db/bigorderSubmission')
 const tokenChecker = require('../middleware/tokenChecker')
 const multer = require('multer')
 

@@ -1,5 +1,5 @@
 function createTestTables(){
-const con = require('../connection').test
+const con = require('../connection')
 con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");

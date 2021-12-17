@@ -1,6 +1,6 @@
-const app = require('../indexTest')
+const app = require('../index')
 const createTestTables = require('../db/migration/createTablesTest')
-const conTest = require('../db/connection').test
+const con = require('../db/connection')
 const supertest = require('supertest')
 const request = supertest(app)
 const fs = require('fs')
@@ -24,7 +24,7 @@ describe('/POST /bigorders/upload csv upload', () => {
       const res = await request.post('/bigorders/upload')
       .attach("file", buffer_ok, "bigorder_ok.csv")
       // expect(insertBigOrderSuccess.mock.calls.length).toBe(1)
-      conTest.query({
+      con.query({
         sql:"DELETE FROM big_orders"
       })
       expect(res.statusCode).toBe(200)
