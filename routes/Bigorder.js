@@ -3,6 +3,7 @@ const router = express.Router()
 
 //custom files
 const bigorderSubmission = require('../db/bigorderSubmission').insert
+const tokenChecker = require('../middleware/tokenChecker')
 const multer = require('multer')
 
 const csv = require('csv-parser')
@@ -14,6 +15,17 @@ const upload = multer({ dest: '../uploads/tmp/bigorders' });
 
 
 let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
+
+router.use(tokenChecker)
+
+router.get('/', async (req,res)=>{
+    const decodedJWT = req.decoded;
+    if(decodedJWT.role)
+        return res.status(200).send({"message":"User is allowed"});
+    return res.status(401).send({"message":"Unauthorized access"});
+                // {"userId":result[0]["user_id"],"firstName":result[0]["first_name"],
+                //          "lastName": result[0]["last_name"], "role":result[0]["role"]}
+})
 
 router.post('/upload', upload.single('file'), async (req, res)=>{
     

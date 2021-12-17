@@ -56,13 +56,16 @@ router.post('/login', async (req, res) => {
         const validationResult = schema.validate({email:email, password:password})
         if(validationResult.error)
             throw new Error(validationResult.error)
-        const user = await authentication.getUserInfo(email, password)
-        console.log(user)
+        const user = await authentication.getUserInfo(email)
+        console.log(user.user)
     
         const match = await bcrypt.compare(password, user.password);
-        const accessToken = jwt.sign(JSON.stringify(user.user), process.env.TOKEN_SECRET)
+        const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
         if(match){
-            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none"}).json({"message":"Welcome"});
+            if(process.env.APP_ENVIRONMENT == "development")
+            res.cookie("token", accessToken,{httpOnly:true,secure:false,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
+            else
+            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
         } else {
             throw new Error("Invalid Credentials")
         }
@@ -81,6 +84,5 @@ function toCapitalThenLower(value){
     let vChar = v[0].toUpperCase()
     return vChar+vString
 }
-toCapitalThenLower("vAlUe")
 
 module.exports = router

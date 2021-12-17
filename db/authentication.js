@@ -22,7 +22,7 @@ function registerUser(user){
             if(err){
                 return rej(Error("Something went wrong"))
             }
-                return res({"result":"User is registered", "User": {"firstName":user.firstName, "lastName": user.lastName}, "error":false})
+                return res({"result":"User is registered", "user": {"firstName":user.firstName, "lastName": user.lastName}, "error":false})
             })
     })
     
@@ -32,8 +32,8 @@ function registerUser(user){
  * @param {string} email The email string
  * @param {string} password The password string
  */
-function getUser(email, password){
-    const userLoginParamList = [email,password]
+function getUser(email){
+    const userLoginParamList = [email]
     return new Promise((res, rej)=>{con.query({ //done for testing purposes remove in production
             sql:
             'SELECT user_id, first_name, last_name, password, role FROM USERS WHERE email = ?',
@@ -44,7 +44,7 @@ function getUser(email, password){
                 console.log(err)
                 return rej(new Error("Something went wrong"))
             }
-            console.log(result)
+            // console.log(result)
             return res({"result":"Welcome is logged in", "password":result[0]["password"],
              "user": {"userId":result[0]["user_id"],"firstName":result[0]["first_name"],
              "lastName": result[0]["last_name"], "role":result[0]["role"]}, "error":false})
