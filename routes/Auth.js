@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
         const savedUser = await authentication.insertUser(user)
         // console.log(savedUser)
 
-        return res.json(savedUser.result);
+        return res.status(201).json(savedUser.result);
     } catch(e) {
         // console.log("\n"+e.message)
         res.status(400).json({ message: "Error"});
