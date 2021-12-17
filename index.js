@@ -9,8 +9,9 @@ const app = express()
 const bigOrderRoute = require('./routes/bigorder')
 const authRoute = require('./routes/Auth');
 
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+
+app.use(express.json({limit:'4mb'}))
+app.use(express.urlencoded({extended: true,limit:'4mb'}))
 app.use(cors({origin:process.env.FRONTEND_URL, credentials:true}));
 app.use(cookieParser())
 //endpoints

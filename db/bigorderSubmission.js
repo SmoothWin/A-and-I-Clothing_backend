@@ -1,7 +1,6 @@
 const con = require('./connection')
 
 const table = "big_orders";
-    /* istanbul ignore next */
 async function insertBigOrders(userid, csvData){
     let handledData = csvData.map(x=>[userid].concat(x))
     const query = new Promise((resolve)=>{

@@ -40,7 +40,7 @@ function getUser(email){
             }, userLoginParamList
             , (err, result)=>{
             if(err){
-                console.log(err)
+                // console.log(err)
                 return rej(new Error("Something went wrong"))
             }
             // console.log(result)
