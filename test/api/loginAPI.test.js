@@ -2,9 +2,8 @@ const createTestTables = require('../../db/migration/createTablesTest')
 const con = require('../../db/connection')
 const app = require('../../index')
 const supertest = require('supertest')
-const request = supertest(app)
-
-const kill = require('kill-port')
+const server = app.listen(8001)
+const request = supertest.agent(server)
 
 const url = "/login" 
 
@@ -22,39 +21,34 @@ beforeEach(()=>{
         "password":"Asd1234567890$",
     }
 })
-
-afterAll(async ()=>{
-    try{
-        await kill(process.env.SERVER_PORT)
-    }catch(e){
-
-    }
+afterEach(()=>{
+    server.close()
 })
 
 describe('/POST /login user registration', ()=>{
 
-    it('Login user password invalid contains only alhpabetical characters', async (done)=>{
-        registerData.password = "strongpassword"
+    it('Login user password invalid contains only alhpabetical characters', async ()=>{
+        loginData.password = "strongpassword"
         const res = await request.post(url)
-        .send(registerData)
+        .send(loginData)
         expect(res.statusCode).toBe(400)
-        done()
+        
     })
 
     it('Login user password invalid doesn\'t have numbers', async ()=>{
-        registerData.password = "strongpassword$"
+        loginData.password = "strongpassword$"
         const res = await request.post(url)
-        .send(registerData)
+        .send(loginData)
         expect(res.statusCode).toBe(400)
-        done()
+        
     })
 
     it('Login user password invalid doesn\'t have special characters', async ()=>{
-        registerData.password = "strongpassword123"
+        loginData.password = "strongpassword123"
         const res = await request.post(url)
-        .send(registerData)
+        .send(loginData)
         expect(res.statusCode).toBe(400)
-        done()
+        
     })
 
 })

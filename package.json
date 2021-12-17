@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env TEST_ENVIRONMENT=testing jest --coverage",
-    "start": "cross-env APP_ENVIRONMENT=development nodemon index.js",
+    "start": "cross-env APP_ENVIRONMENT=development nodemon server.js",
     "create_tables": "node ./db/migration/createTables.js",
     "create_test_tables": "node ./db/migration/createTablesTest.js"
   },
@@ -35,7 +35,6 @@
     "@types/jest": "^27.0.3",
     "cross-env": "^7.0.3",
     "jest": "^27.4.4",
-    "kill-port": "^1.6.1",
     "supertest": "^6.1.6"
   },
   "jest": {
