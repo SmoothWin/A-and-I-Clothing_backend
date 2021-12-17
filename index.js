@@ -12,7 +12,7 @@ const authRoute = require('./routes/Auth');
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(cors({origin:"https://www.thunderclient.io"}));
+app.use(cors({origin:process.env.FRONTEND_URL}));
 app.use(cookieParser())
 //endpoints
 app.use("/bigorders",bigOrderRoute)
