@@ -26,13 +26,4 @@ describe('Database read user', () => {
             expect(e.message).toBe("Something went wrong")
         }
     })
-    it('Email shouldn\'t be null', async () => {
-        email = null
-        try{
-            await getUser(email)
-        }catch(e){
-            expect(e.name).toBe("Error")
-            expect(e.message).toBe("Something went wrong")
-        }
-    })
 })
