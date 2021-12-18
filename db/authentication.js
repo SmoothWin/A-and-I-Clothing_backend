@@ -5,11 +5,10 @@ const con = require('./connection')
  * @param {User} user The user object
  */
 function registerUser(user){
-    const userParamList = [user.firstName, user.lastName, user.email, user.password,
-        user.role, user.phoneCountryCode, user.phoneNumber, user.address,user.buildingNumber,
-        user.city, user.country, user.postalCode, user.organizationName]
-
     return new Promise((res, rej) => {
+        const userParamList = [user.firstName, user.lastName, user.email, user.password,
+            user.role, user.phoneCountryCode, user.phoneNumber, user.address,user.buildingNumber,
+            user.city, user.country, user.postalCode, user.organizationName]
         con.query({ //done for testing purposes remove in production
             sql:
             'INSERT INTO USERS(first_name, last_name, email, password, role, phone_country_code,'+
@@ -29,7 +28,6 @@ function registerUser(user){
 
 /**
  * @param {string} email The email string
- * @param {string} password The password string
  */
 function getUser(email){
     const userLoginParamList = [email]
@@ -43,8 +41,15 @@ function getUser(email){
                 // console.log(err)
                 return rej(new Error("Something went wrong"))
             }
+            if(typeof result == "undefined"){
+                // console.log(err)
+                return rej(new Error("Something went wrong"))
+            }
+            if(result.length < 1){
+                return rej(new Error("Something went wrong"))
+            }
             // console.log(result)
-            return res({"result":"Welcome is logged in", "password":result[0]["password"],
+            return res({"result":"Welcome", "password":result[0]["password"],
              "user": {"userId":result[0]["user_id"],"firstName":result[0]["first_name"],
              "lastName": result[0]["last_name"], "role":result[0]["role"]}, "error":false})
             })

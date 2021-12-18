@@ -4,8 +4,9 @@
   "description": "backend for final external project for A & I clothing",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest --coverage",
-    "start": "cross-env APP_ENVIRONMENT=development nodemon server.js",
+    "test": "cross-env ENDTEST=false TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest --coverage --testPathIgnorePatterns='test/E2E*'",
+    "test:e2e":"cross-env  ENDTEST=true TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest 'test/E2E*' --coverage",
+    "start": "cross-env APP_ENVIRONMENT=development TEST_ENVIRONMENT=none nodemon server.js",
     "create_tables": "node ./db/migration/createTables.js",
     "create_test_tables": "node ./db/migration/createTablesTest.js"
   },
@@ -34,7 +35,8 @@
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "cross-env": "^7.0.3",
-    "jest": "^27.4.4",
+    "jest": "^27.4.5",
+    "puppeteer": "^13.0.0",
     "supertest": "^6.1.6"
   },
   "jest": {

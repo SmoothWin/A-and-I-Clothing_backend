@@ -97,7 +97,7 @@ describe('/POST /register user registration', ()=>{
     it('Register user should be successfull', async ()=>{
         const res = await request.post(url)
         .send(registerData)
-        expect(res.statusCode).toBe(200)
+        expect(res.statusCode).toBe(201)
         
     })
     it('Register unsuccessful Firstname too short', async ()=>{

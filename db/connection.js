@@ -1,5 +1,5 @@
 require('dotenv').config({path:__dirname+"/../.env"});
-console.log(__dirname+"/../.env")
+
 const mysql = require('mysql2')
 let con = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -8,7 +8,7 @@ let con = mysql.createConnection({
     password: process.env.DB_SECRET,
     database: process.env.DB_DB
 })
-if(process.env.TEST_ENVIRONMENT="testing"){
+if(process.env.TEST_ENVIRONMENT=="testing"){
     con = mysql.createConnection({
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
