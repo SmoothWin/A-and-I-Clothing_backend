@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
         if(password != confirmpassword)
          throw new Error("Passwords don't match")
        
-        const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|())/g,"") //to pass into the sql
+        const modifiedPhoneNumber = phoneNumber.replace(/(-| |\.|_|\(|\))/g,"") //to pass into the sql
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const user = new User(null, toCapitalThenLower(firstName.trim()), toCapitalThenLower(lastName.trim()), email.trim(), hashedPassword,

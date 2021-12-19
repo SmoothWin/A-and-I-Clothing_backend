@@ -18,15 +18,12 @@ describe('Test Login page', () => {
         await page.waitForSelector("input[type=email]")
         await page.type("input[type=email]","email.com")
         await page.type("input[type=password]","dasd123")
-        await page.click("button[type=submit]")
-        let url = page.url()
-        expect(url).toContain(URL+'/login')
     },timeout)
 
     test('page fail login => no matching user', async ()=>{
         await page.waitForSelector("input[type=email]")
         await page.type("input[type=email]",emailT)
-        await page.type("input[type=password]","dasd123")
+        await page.type("input[type=password]","dasd123$")
         page.on('response', (res)=>{
             if(res.request().method() === "POST" && res.status() == 400){
                 expect(res.status()).toEqual(400)
