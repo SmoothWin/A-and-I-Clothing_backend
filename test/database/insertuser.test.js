@@ -13,7 +13,7 @@ beforeAll(()=>{
     createTestTables()
 })
 
-describe('Database read user', () => {
+describe('Database insert user', () => {
     it('Successfull user insert', async () => {
       const result = await insertUser(newUser)
       expect(result).toBeDefined();

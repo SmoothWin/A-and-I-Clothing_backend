@@ -1,7 +1,7 @@
 const con = require('../../db/connection')
 const User = require('../../db/models/User')
 
-const timeout = 15000;
+const timeout = 40000;
 
 const newUser = new User(null, "Ch", "Ch", "email@a.com", "dummypassword123$",
 "customer", "1","3423244321", "32 street boulevard", null, "Pr", "Da", "s1232", null,)
@@ -11,7 +11,7 @@ const passwordT = "strongpassword123$"
 
 beforeEach(async ()=>{
     await page.goto(URL+"/register", {waitUntil: 'domcontentloaded'});
-})
+}, timeout)
 
 describe('Test register page', () => { 
 
@@ -21,7 +21,7 @@ describe('Test register page', () => {
     }, timeout);
 
     test('register a user', async () => {
-        await page.waitForSelector("#register_fName")
+        await page.waitForSelector("#register_fName",{visible:true})
         await page.type("#register_fName", newUser.firstName)
         await page.type("#register_lName", newUser.lastName)
         await page.type("#register_email", newUser.email)
@@ -50,7 +50,7 @@ describe('Test register page', () => {
     test('register a user -> test input validation messages', async () => {
 
 
-        await page.waitForSelector("#register_fName")
+        await page.waitForSelector("#register_fName",{visible:true})
         await page.type("#register_fName", "c")
         await page.type("#register_lName", "c")
         await page.type("#register_email", "c")
