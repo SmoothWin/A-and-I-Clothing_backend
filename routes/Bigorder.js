@@ -10,10 +10,26 @@ const csv = require('csv-parser')
 const fs = require('fs')
 const {promisify} = require('util')
 
+
+const allowedMimes = ['text/csv','application/vnd.ms-excel',
+                'text/plain', 'text/x-csv', 'application/csv', 'application/x-csv',
+                'text/comma-separated-values', 'text/x-comma-separated-values']
+
 const unlinkAsync = promisify(fs.unlink)
 const upload = multer({ dest: '../uploads/tmp/bigorders',
                     limits:{files:1, fileSize:1024*1024},
-                    fileFilter: ['text/csv']});
+                    fileFilter: (req, file, cb)=>{
+                        console.log(file.mimetype)
+                        if(allowedMimes.includes(file.mimetype.toLowerCase())){
+                            cb(null,true)
+                        }
+                        if(!(allowedMimes.includes(file.mimetype.toLowerCase()))){
+                            cb(new Error("File is not supported"))
+                        } else{
+                            new Error
+                        }
+                    },
+                    });
 
 
 let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production

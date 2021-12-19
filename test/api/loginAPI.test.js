@@ -95,6 +95,7 @@ describe('/POST /login user authentication', ()=>{
         loginData.password = "strongpassword123"
         const res = await request.post(url)
         .send(loginData)
+        
         expect(res.statusCode).toBe(400)
         
     })

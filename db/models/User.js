@@ -14,6 +14,23 @@ const schema = Joi.object({
 })
 
 class User{
+    /**
+     * @param {string} userId The user id normally it should be null for insertions
+     * @param {string} firstName The first name string
+     * @param {string} lastName The last name string
+     * @param {string} email The email string
+     * @param {string} password The password string
+     * @param {string} role The role string
+     * @param {string} phoneCountryCode The phoneCountryCode string
+     * @param {string} phoneNumber The phoneNumber string
+     * @param {string} address The address string
+     * @param {string} buildingNumber The buildingNumber string can be null
+     * @param {string} city The city string
+     * @param {string} country The country string
+     * @param {string} postalCode The postalCode string
+     * @param {string} organizationName The organizationName string can be null
+     * @param {Date} dateTime The dateTime Date Object should be null: database should set this automatically
+     */
     constructor(userId, firstName, lastName, email, password,
                 role, phoneCountryCode, phoneNumber, address,
                 buildingNumber, city, country, postalCode,
@@ -33,7 +50,7 @@ class User{
             organizationName:organizationName
         })
         if(result.error)
-            throw new Error(result.error)
+            throw new Joi.ValidationError(result.error)
 
         this.userId = userId;
         this.firstName = firstName;
