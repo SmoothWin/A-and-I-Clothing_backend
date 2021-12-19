@@ -1,4 +1,3 @@
-
 const timeout = 15000;
 
 describe('Test page rendering', () => { 

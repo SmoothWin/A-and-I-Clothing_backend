@@ -1,3 +1,4 @@
+const timeout = 15000;
 const createTestTables = require('../../db/migration/createTablesTest')
 const User = require('../../db/models/User')
 const getUser = require('../../db/authentication').getUserInfo
@@ -15,7 +16,7 @@ describe('Database read user', () => {
       expect(result.result).toBe("Welcome");
       expect(result.user).toBeDefined();
       expect(result.user.userId).toBeDefined();
-    })
+    }, timeout)
 
     it('Email doesn\'t exist', async () => {
         email = "2312312"
@@ -25,5 +26,5 @@ describe('Database read user', () => {
             expect(e.name).toBe("Error")
             expect(e.message).toBe("Something went wrong")
         }
-    })
+    },timeout)
 })
