@@ -18,7 +18,7 @@ module.exports = (req,res,next) => {
     // return an error
     return res.status(403).send({
         "error": true,
-        "message": 'No token provided.'
+        "message": 'Something Went Wrong'
     });
   }
 }

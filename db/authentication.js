@@ -27,6 +27,37 @@ function registerUser(user){
 }
 
 /**
+ * @param {string} id The user_id string
+ */
+ function getUserById(id){
+    const userLoginParamList = [id]
+    return new Promise((res, rej)=>{con.query({ //done for testing purposes remove in production
+            sql:
+            'SELECT first_name, last_name role FROM USERS WHERE user_id = ?',
+            timeout:10000
+            }, userLoginParamList
+            , (err, result)=>{
+            if(err){
+                // console.log(err)
+                return rej(new Error("Something went wrong"))
+            }
+            if(typeof result == "undefined"){
+                // console.log(err)
+                return rej(new Error("Something went wrong"))
+            }
+            if(result.length < 1){
+                return rej(new Error("Something went wrong"))
+            }
+            // console.log(result)
+            return res({
+             "user": {"firstName":result[0]["first_name"],
+             "lastName": result[0]["last_name"]}})
+            })
+        })
+ }
+
+
+/**
  * @param {string} email The email string
  */
 function getUser(email){
@@ -58,5 +89,6 @@ function getUser(email){
 
 module.exports = {
     insertUser:registerUser,
-    getUserInfo:getUser
+    getUserInfo:getUser,
+    getUserById: getUserById
 }
