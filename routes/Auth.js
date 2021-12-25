@@ -8,6 +8,20 @@ const Joi = require('joi')
 //custom imports
 const User = require('../db/models/user')
 const authentication = require('../db/authentication')
+const tokenChecker = require('../middleware/tokenChecker')
+
+router.use('/check', tokenChecker)
+
+router.post('/check', async (req, res)=>{
+    try{
+        const decodedJWT = req.decoded
+        if(decodedJWT)
+            return res.json({"firstName":req.decoded.firstName, "lastName":req.decoded.lastName})
+        return res.send()
+    }catch(e){
+
+    }
+})
 
 router.post('/register', async (req, res) => {
     try {
@@ -76,6 +90,16 @@ router.post('/login', async (req, res) => {
         res.status(400).json({message: "Invalid Credentials"})
     }
 });
+
+
+
+router.post('/logout', async (req, res)=>{
+    try{
+        return res.cookie("token", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).send()
+    }catch(e){
+        console.log(e)
+    }
+})
 
 /**
  * @param {string} value //value to pass in order to follow this format: aptitude -> Aptitude

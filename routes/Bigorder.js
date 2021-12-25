@@ -46,7 +46,10 @@ router.get('/', async (req,res)=>{
 })
 
 router.post('/upload', upload.single('file'), async (req, res)=>{
-    
+    const decodedJWT = req.decoded;
+    if(!decodedJWT?.role)
+        return res.status(401).send({"message":"Unauthorized access"});
+        
     const results = []
     let message
     // console.log(req.file)

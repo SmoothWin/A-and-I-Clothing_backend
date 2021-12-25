@@ -6,7 +6,7 @@
   "scripts": {
     "test": "cross-env ENDTEST=false TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest --coverage --testPathIgnorePatterns='test/E2E*'",
     "test:e2e":"cross-env  ENDTEST=true TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest 'test/E2E*' --coverage",
-    "start": "cross-env APP_ENVIRONMENT=development TEST_ENVIRONMENT=none nodemon server.js",
+    "start": "cross-env APP_ENVIRONMENT=production TEST_ENVIRONMENT=none nodemon server.js",
     "start-test":"cross-env APP_ENVIRONMENT=development TEST_ENVIRONMENT=testing nodemon server.js",
     "create_tables": "node ./db/migration/createTables.js",
     "create_test_tables": "node ./db/migration/createTablesTest.js"
