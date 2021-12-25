@@ -17,9 +17,9 @@ router.post('/check', async (req, res)=>{
         const decodedJWT = req.decoded
         if(decodedJWT)
             return res.json({"firstName":req.decoded.firstName, "lastName":req.decoded.lastName})
-        return res.send()
+        return res.status(401).send();
     }catch(e){
-
+        return res.status(401).send();
     }
 })
 
