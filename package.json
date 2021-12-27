@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env ENDTEST=false TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest --coverage --testPathIgnorePatterns='test/E2E*'",
-    "test:e2e":"cross-env  ENDTEST=true TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest 'test/E2E*' --coverage",
+    "test:e2e": "cross-env  ENDTEST=true TEST_ENVIRONMENT=testing APP_ENVIRONMENT=development jest 'test/E2E*' --coverage",
     "start": "cross-env APP_ENVIRONMENT=production TEST_ENVIRONMENT=none nodemon server.js",
-    "start-test":"cross-env APP_ENVIRONMENT=development TEST_ENVIRONMENT=testing nodemon server.js",
+    "start-test": "cross-env APP_ENVIRONMENT=development TEST_ENVIRONMENT=testing nodemon server.js",
     "create_tables": "node ./db/migration/createTables.js",
     "create_test_tables": "node ./db/migration/createTablesTest.js"
   },
@@ -27,14 +27,17 @@
     "csv-parser": "^3.0.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "joi": "^17.5.0",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "stripe": "^8.195.0"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
+    "@types/stripe-v3": "^3.1.26",
     "cross-env": "^7.0.3",
     "jest": "^27.4.5",
     "puppeteer": "^13.0.0",
