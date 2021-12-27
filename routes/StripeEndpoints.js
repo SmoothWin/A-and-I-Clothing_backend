@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET)
 
 router.get("/v1/products", async (req, res)=>{
     try{
-        const products = await stripe.products.list()
+        const products = await stripe.products.list((req.query.starting_after)?{starting_after:req.query.starting_after}:null)
         const changedList = []
         products.data.forEach(x=>{
             if(x.object === "product")
@@ -12,6 +12,7 @@ router.get("/v1/products", async (req, res)=>{
         })
         return res.json({"products": changedList, "has_more":products.has_more})
     }catch(e){
+        console.log(e)
         return res.status(404).json({"message":"Something went wrong with fetching the list of products"})
     }
 })
