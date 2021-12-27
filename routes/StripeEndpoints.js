@@ -12,7 +12,6 @@ router.get("/v1/products", async (req, res)=>{
         })
         return res.json({"products": changedList, "has_more":products.has_more})
     }catch(e){
-        console.log(e)
         return res.status(404).json({"message":"Something went wrong with fetching the list of products"})
     }
 })
