@@ -20,6 +20,6 @@ app.use(cookieParser())
 //endpoints
 app.use("/bigorders",bigOrderRoute)
 app.use(authRoute)
-app.use(stripeRoute)
+app.use("/v1/products",stripeRoute)
 
 module.exports = app

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const stripe = require('stripe')(process.env.STRIPE_SECRET)
 
-router.get("/v1/products", async (req, res)=>{
+router.get("/", async (req, res)=>{
     try{
         const products = await stripe.products.list((req.query.starting_after)?{starting_after:req.query.starting_after}:null)
         const changedList = []
@@ -16,7 +16,7 @@ router.get("/v1/products", async (req, res)=>{
     }
 })
 
-router.get("/v1/products/:productId", async (req, res)=>{
+router.get("/:productId", async (req, res)=>{
     try{
     const product = await stripe.products.retrieve(req.params.productId)
     if(!product.active)
