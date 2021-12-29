@@ -30,4 +30,19 @@ router.get("/:productId", async (req, res)=>{
     }
 })
 
+router.post("/", async (req, res)=>{
+    try{
+        const ids = req.body.ids
+        const products = await stripe.products.list({limit:100,ids:ids})
+        const changedList = []
+        products.data.forEach(x=>{
+            if(x.object === "product")
+                changedList.push({"id":x.id, "active":x.active, "name":x.name,"description":x.description, "images":x.images, "metadata":x.metadata})
+        })
+        return res.json({"products": changedList, "has_more":products.has_more})
+    }catch(e){
+        return res.status(404).json({"message":"Something went wrong with fetching the list of products"})
+    }
+})
+
 module.exports = router
