@@ -2,8 +2,7 @@ const createTestTables = require('../../db/migration/createTablesTest')
 const con = require('../../db/connection')
 const app = require('../../index')
 const supertest = require('supertest')
-const { assert } = require('joi')
-const server = app.listen(8001)
+const server = app.listen()
 const request = supertest.agent(server)
 
 const url = "/login" 
