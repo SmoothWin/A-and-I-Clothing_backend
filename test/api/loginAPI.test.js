@@ -21,7 +21,8 @@ beforeEach(()=>{
         "password":"Asd1234567890$",
     }
 })
-afterEach(()=>{
+afterEach(async ()=>{
+    await request.post("/logout")
     server.close()
 })
 
@@ -34,21 +35,6 @@ describe('/POST /login user authentication', ()=>{
         expect(res.headers["set-cookie"]).toBeDefined()
         
     })
-
-    // it('Login with no valid jwt cookie', async ()=>{
-    //     const res = await request.post(url)
-    //     .set("Cookie", ['token=vd123sa;something=sdasda'])
-    //     .withCredentials()
-    //     .end(request.saveCookies("token"))
-    //     console.log(res.headers)
-    //     expect(res.statusCode).toBe(401)
-    // })
-
-    // it('Login with no jwt cookie', async ()=>{
-    //     const res = await request.post(url).
-    //     expect(res.statusCode).toBe(403)
-    //     expect(res.headers["set-cookie"]).toBeUndefined()
-    // })
 
     it('Login shouldn\'t work not matching password', async ()=>{
         loginData.password += "a" 
