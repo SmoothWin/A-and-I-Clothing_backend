@@ -48,6 +48,20 @@ con.connect(function(err) {
                       console.log("Table 'big_orders' created")
                     }
                   })
+       con.query(`CREATE TABLE shopping_cart (
+                    id int NOT NULL AUTO_INCREMENT,
+                    cart_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
+                    user_id varchar(40) NOT NULL,
+                    cart_data text default NULL,
+                    PRIMARY KEY (id),
+                    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                    )`, (err, result) =>{
+                      if(err) {
+                        console.error("Table 'shopping_cart' already exists")
+                        }else{
+                      console.log("Table 'shopping_cart' created")
+                    }
+                  })
       con.query({ //done for testing purposes remove in production
         sql:
         'INSERT INTO USERS(user_id, first_name, last_name, email, password, role, phone_country_code,'+
