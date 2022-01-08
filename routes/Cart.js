@@ -14,6 +14,8 @@ router.post("/cart/add", async (req, res)=>{
         const decodedJWT = req.decoded
         const cartdata = req.body.cart
 
+        //probably add a cart data validator for people who try to send/store invalid cart data
+
         await cart.addToCart(decodedJWT.userId, cartdata) 
 
         //add/modify shopping cart in database using userId from decodedJWT
