@@ -24,9 +24,9 @@ con.connect(function(err) {
                     PRIMARY KEY (id)
                     )`, (err, result) =>{
                     if(err) {
-                        console.log("Table 'users' already exists")
+                        // console.log("Table 'users' already exists")
                     }else{
-                    console.log("Table 'users' created")
+                    // console.log("Table 'users' created")
                     }
                     })
       con.query(`CREATE TABLE big_orders (
@@ -43,9 +43,9 @@ con.connect(function(err) {
                     )`, (err, result) =>{
                       if(err) {
                         // console.log(err)
-                        console.log("Table 'big_orders' already exists")
+                        // console.log("Table 'big_orders' already exists")
                         }else{
-                      console.log("Table 'big_orders' created")
+                      // console.log("Table 'big_orders' created")
                     }
                   })
        con.query(`CREATE TABLE shopping_cart (
@@ -57,9 +57,9 @@ con.connect(function(err) {
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                     )`, (err, result) =>{
                       if(err) {
-                        console.error("Table 'shopping_cart' already exists")
+                        // console.log("Table 'shopping_cart' already exists")
                         }else{
-                      console.log("Table 'shopping_cart' created")
+                      // console.log("Table 'shopping_cart' created")
                     }
                   })
       con.query({ //done for testing purposes remove in production
@@ -72,9 +72,9 @@ con.connect(function(err) {
          "customer", "1","3423244321", "32 street boulevard", null, "Pr", "Da", "s1232", null, ]
          , (err, result)=>{
            if(err){
-              console.log("Dummy user already exists")
+              // console.log("Dummy user already exists")
            }else{
-             console.log("Dummy user created")
+            //  console.log("Dummy user created")
            }
          })
   });

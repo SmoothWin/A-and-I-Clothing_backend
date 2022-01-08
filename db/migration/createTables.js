@@ -24,7 +24,7 @@ con.connect(function(err) {
                     PRIMARY KEY (id)
                     )`, (err, result) =>{
                     if(err) {
-                        console.error("Table 'users' already exists")
+                        console.log("Table 'users' already exists")
                     }else{
                     console.log("Table 'users' created")
                     }
@@ -38,7 +38,7 @@ con.connect(function(err) {
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                     )`, (err, result) =>{
                       if(err) {
-                        console.error("Table 'shopping_cart' already exists")
+                        console.log("Table 'shopping_cart' already exists")
                         }else{
                       console.log("Table 'shopping_cart' created")
                     }
@@ -56,7 +56,7 @@ con.connect(function(err) {
         FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`, (err)=>{
           if(err) {
-            console.error("Table 'shopping_cart' already exists")
+            console.log("Table 'shopping_cart' already exists")
             }else{
             console.log("Table 'shopping_cart' created")
             }
@@ -71,7 +71,7 @@ con.connect(function(err) {
          "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
          , (err, result)=>{
            if(err){
-              console.error("Dummy user already exists")
+              console.log("Dummy user already exists")
            }else{
              console.log("Dummy user created")
            }

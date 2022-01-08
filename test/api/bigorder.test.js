@@ -22,13 +22,28 @@ let loginData = {
 }
 
 let cookie = null
+let csrf = null
 
 beforeAll(()=>{
   createTestTables()
 })
 beforeEach(async ()=>{
-  const res = await request.post("/login").send(loginData)
-  cookie = res.headers['set-cookie']
+  
+  // console.log(csrf)
+  try{
+    if(csrf == null){
+      const csrfCall = await request.get("/validator/checker")
+      csrf = csrfCall.body.token
+    }
+    const res = await request.post("/login").send(loginData).set({'csrf-token':csrf})
+    
+    
+    cookie = res.headers['set-cookie']
+    console.log(cookie)
+  }catch(e){
+    console.log(e)
+  }
+
   // request.saveCookies(res)
 })
 afterEach(()=>{
@@ -39,7 +54,8 @@ afterEach(()=>{
 describe('/POST /bigorders/upload csv upload', () => {
     it('Submitting .csv file should be successful', async () => {
       const res = await request.post('/bigorders/upload')
-      .attach("file", buffer_ok, "bigorder_ok.csv").set('Cookie', [cookie])
+      .set({'csrf-token':csrf}).set('Cookie',cookie.toString())
+      .attach("file", buffer_ok, "bigorder_ok.csv")
       // expect(insertBigOrderSuccess.mock.calls.length).toBe(1)
       con.query({
         sql:"DELETE FROM big_orders"
@@ -52,8 +68,8 @@ describe('/POST /bigorders/upload csv upload', () => {
 describe('/POST /bigorders/upload csv upload Error -> quantity is not a number', () => {
   it('.csv file submission should fail because quantity is not an integer', async () => {
     const res = await request.post('/bigorders/upload')
-      .attach("file", buffer_quantity_not_int, "bigorder_quantity_not_integer.csv").set('Cookie', [cookie])
-
+    .set({'csrf-token':csrf}).set('Cookie',cookie.toString())
+      .attach("file", buffer_quantity_not_int, "bigorder_quantity_not_integer.csv")
       expect(res.body.message).toBe("Quantity for big orders in the csv needs to be in \"integer\" digits")
       expect(res.statusCode).toBe(400)
       // console.log(res.body)
@@ -62,7 +78,7 @@ describe('/POST /bigorders/upload csv upload Error -> quantity is not a number',
 
 describe('/POST /bigorders/upload csv upload Error -> no file', () => {
   it('.csv file submission should fail because no file was submitted', async () => {
-    const res = await request.post('/bigorders/upload').set('Cookie', [cookie])
+    const res = await request.post('/bigorders/upload').set({'csrf-token':csrf}).set('Cookie',cookie.toString())
     .send()
       // console.log(res)
     expect(res.body.message).toBe("No files were uploaded.")
@@ -73,7 +89,8 @@ describe('/POST /bigorders/upload csv upload Error -> no file', () => {
 describe('/POST /bigorders/upload csv upload Error -> no data was inserted', () => {
   it('.csv file submission should fail because no order rows were added', async () => {
     const res = await request.post('/bigorders/upload')
-      .attach("file", buffer_no_data, "bigorder_no_extra_data.csv").set('Cookie', [cookie])
+    .set({'csrf-token':csrf}).set('Cookie',cookie.toString())
+      .attach("file", buffer_no_data, "bigorder_no_extra_data.csv")
 
       expect(res.body.message).toBe("No orders were attached to the file")
       expect(res.statusCode).toBe(400)
