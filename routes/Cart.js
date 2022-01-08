@@ -39,3 +39,5 @@ router.post("/cart/get", async (req, res)=>{
         return res.status(400).json({"message":"Something went wrong with syncing cart data"})
     }
 })
+
+module.exports = router

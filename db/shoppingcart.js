@@ -11,7 +11,15 @@ async function addToCart(userid, cartData){
         }, [userid, cartData], async (err, result)=>{
             if(err){
                 console.log(err.errno)
-                return rej(new Error("Something went wrong"))
+                con.query({
+                    sql:'UPDATE '+
+                        `${table} set cart_data = ? WHERE user_id = ?`,
+                    timeout: 10000}, [cartData, userid],
+                    async (err, result)=>{
+                        if(err) 
+                            return rej(new Error("Something went wrong"))
+                        
+                    })
             }
             return res({"result":"Data has been added", "error":false})
         })

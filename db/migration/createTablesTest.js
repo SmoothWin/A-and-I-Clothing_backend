@@ -51,7 +51,7 @@ con.connect(function(err) {
        con.query(`CREATE TABLE shopping_cart (
                     id int NOT NULL AUTO_INCREMENT,
                     cart_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
-                    user_id varchar(40) NOT NULL,
+                    user_id varchar(40) UNIQUE NOT NULL,
                     cart_data text default NULL,
                     PRIMARY KEY (id),
                     FOREIGN KEY (user_id) REFERENCES users(user_id)

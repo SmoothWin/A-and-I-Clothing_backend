@@ -17,6 +17,7 @@ const csrfchecker = require('./routes/csrfchecker')
 const bigOrderRoute = require('./routes/bigorder')
 const authRoute = require('./routes/Auth');
 const stripeRoute = require('./routes/StripeEndpoints')
+const cart = require('./routes/Cart')
 
 app.use(helmet())
 app.use(express.json({limit:'4mb'}))
@@ -29,5 +30,6 @@ app.use(csrfchecker)
 app.use(authRoute)
 app.use("/bigorders",bigOrderRoute)
 app.use("/v1/products",stripeRoute)
+app.use(cart)
 
 module.exports = app
