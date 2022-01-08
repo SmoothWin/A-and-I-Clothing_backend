@@ -49,4 +49,7 @@ async function getCartDataByUserId(userid){
 
 
 
-module.exports = insertBigOrders
+module.exports = {
+    addToCart:addToCart,
+    getCartDataByUserId:getCartDataByUserId
+}
