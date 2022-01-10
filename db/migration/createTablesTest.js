@@ -29,6 +29,18 @@ con.connect(function(err) {
                     // console.log("Table 'users' created")
                     }
                     })
+      con.query(`CREATE TABLE tokens (
+                    id int NOT NULL AUTO_INCREMENT,
+                    user_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
+                    token text NULL default NULL,
+                    PRIMARY KEY (id)
+                    )`, (err, result) =>{
+                    if(err) {
+                        // console.log("Table 'tokens' already exists")
+                    }else{
+                    // console.log("Table 'tokens' created")
+                    }
+                    })
       con.query(`CREATE TABLE big_orders (
                     id int NOT NULL AUTO_INCREMENT,
                     order_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
