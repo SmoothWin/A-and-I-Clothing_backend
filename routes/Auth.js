@@ -7,12 +7,14 @@ const Joi = require('joi')
 
 //custom imports
 const User = require('../db/models/user')
-const authentication = require('../db/authentication')
 const tokenChecker = require('../middleware/tokenChecker')
+const refreshTokenChecker = require('../middleware/refreshTokenChecker')
 
-router.use('/check', tokenChecker)
+//db call imports
+const authentication = require('../db/authentication')
+const {addRefreshToken} = require('../db/tokenStorage')
 
-router.post('/check', async (req, res)=>{
+router.post('/check', tokenChecker, async (req, res)=>{
     try{
         const decodedJWT = req.decoded
         if(decodedJWT)
@@ -20,6 +22,24 @@ router.post('/check', async (req, res)=>{
         return res.status(401).send();
     }catch(e){
         return res.status(401).send();
+    }
+})
+
+router.post('/token', refreshTokenChecker, async (req, res)=>{
+    try{
+        const decodedRJWT = req.decodedR
+        if(decodedRJWT){
+            const accessToken = jwt.sign({
+                userId: decodedRJWT.userId,
+                firstName: decodedRJWT.firstName,
+                lastName:decodedRJWT.lastName,
+                role:decodedRJWT.role
+            }, process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
+
+            return res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).send()
+        }
+    }catch(e){
+        return res.status(400).json({message: "Invalid"})
     }
 })
 
@@ -74,15 +94,26 @@ router.post('/login', async (req, res) => {
         // console.log(user.user)
     
         const match = await bcrypt.compare(password, user.password);
-        const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
+        
+        
+        
         if(match){
-            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
+            const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
+            const refreshToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.REFRESH_SECRET, {expiresIn:process.env.REFRESH_EXPIRATION})
+            
+            //store refresh token in database method
+            await addRefreshToken(user.user.userId, refreshToken)
+
+            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION})
+            .cookie("tokenR", refreshToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.REFRESH_EXPIRATION})
+            .json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
+            
         } else {
             throw new Error("Invalid Credentials")
         }
     } catch(e) {
         // console.log(e.message)
-        res.status(400).json({message: "Invalid Credentials"})
+        return res.status(400).json({message: "Invalid Credentials"})
     }
 });
 
@@ -90,7 +121,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout', async (req, res)=>{
     try{
-        return res.cookie("token", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).send()
+        return res.cookie("token", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).cookie("tokenR", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).send()
     }catch(e){
         console.log(e)
     }
