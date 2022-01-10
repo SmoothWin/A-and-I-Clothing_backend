@@ -71,16 +71,11 @@ router.post('/login', async (req, res) => {
         if(validationResult.error)
             throw new Error(validationResult.error)
         const user = await authentication.getUserInfo(email)
-        console.log(user.user)
+        // console.log(user.user)
     
         const match = await bcrypt.compare(password, user.password);
         const accessToken = jwt.sign(JSON.parse(JSON.stringify(user.user)), process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
         if(match){
-            console.log(process.env.APP_ENVIRONMENT)
-            /* istanbul ignore next */
-            if(process.env.APP_ENVIRONMENT == "development")
-            res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
-            else
             res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
         } else {
             throw new Error("Invalid Credentials")

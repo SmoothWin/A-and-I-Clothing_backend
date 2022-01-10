@@ -1,4 +1,4 @@
-const con = require('../connection').con
+const con = require('../connection')
 
 con.connect(function(err) {
     if (err) throw err;
@@ -24,29 +24,43 @@ con.connect(function(err) {
                     PRIMARY KEY (id)
                     )`, (err, result) =>{
                     if(err) {
-                        console.error("Table 'users' already exists")
+                        console.log("Table 'users' already exists")
                     }else{
                     console.log("Table 'users' created")
                     }
                     })
-      con.query(`CREATE TABLE big_orders (
+      con.query(`CREATE TABLE shopping_cart (
                     id int NOT NULL AUTO_INCREMENT,
-                    order_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
-                    user_id varchar(40) NOT NULL,
-                    product varchar(255) NOT NULL,
-                    quantity int unsigned,
-                    color varchar(255),
-                    description_of_design text null default null,
-                    date_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    cart_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
+                    user_id varchar(40) UNIQUE NOT NULL,
+                    cart_data text default NULL,
                     PRIMARY KEY (id),
                     FOREIGN KEY (user_id) REFERENCES users(user_id)
                     )`, (err, result) =>{
                       if(err) {
-                        console.error("Table 'big_orders' already exists")
+                        console.log("Table 'shopping_cart' already exists")
                         }else{
-                      console.log("Table 'big_orders' created")
+                      console.log("Table 'shopping_cart' created")
                     }
                   })
+      con.query(`CREATE TABLE big_orders (
+        id int NOT NULL AUTO_INCREMENT,
+        order_id varchar(40) UNIQUE NOT NULL default(REPLACE(UUID(),'-','')),
+        user_id varchar(40) NOT NULL,
+        product varchar(255) NOT NULL,
+        quantity int unsigned,
+        color varchar(255),
+        description_of_design text null default null,
+        date_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )`, (err)=>{
+          if(err) {
+            console.log("Table 'shopping_cart' already exists")
+            }else{
+            console.log("Table 'shopping_cart' created")
+            }
+        })
       con.query({ //done for testing purposes remove in production
         sql:
         'INSERT INTO USERS(user_id, first_name, last_name, email, password, role, phone_country_code,'+
@@ -57,7 +71,7 @@ con.connect(function(err) {
          "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
          , (err, result)=>{
            if(err){
-              console.error("Dummy user already exists")
+              console.log("Dummy user already exists")
            }else{
              console.log("Dummy user created")
            }
