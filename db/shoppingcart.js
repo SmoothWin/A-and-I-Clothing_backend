@@ -17,7 +17,7 @@ async function addToCart(userid, cartData){
                     timeout: 10000}, [cartData, userid],
                     async (err, result)=>{
                         if(err) 
-                            return rej(new Error("Something went wrong"))
+                            return rej(new Error("Something went wrong with adding cart data"))
                         
                     })
             }
@@ -35,13 +35,13 @@ async function getCartDataByUserId(userid){
         }, [userid],
         (err, result)=>{
             if(err){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Something went wront with fetching cart data"))
             }
             if(typeof result == "undefined"){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Cart is missing"))
             }
             if(result.length < 1){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Cart is missing"))
             }
 
             return res({

@@ -35,13 +35,13 @@ async function getRefreshToken(userid){
         }, [userid],
         (err, result)=>{
             if(err){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Something went wront with fetching token data"))
             }
             if(typeof result == "undefined"){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Token is missing"))
             }
             if(result.length < 1){
-                return rej(new Error("Something went wrong"))
+                return rej(new Error("Token is missing"))
             }
 
             return res({
