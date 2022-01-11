@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit')
 const express = require('express')
 const router = express.Router()
 
@@ -13,6 +14,26 @@ const refreshTokenChecker = require('../middleware/refreshTokenChecker')
 //db call imports
 const authentication = require('../db/authentication')
 const {addRefreshToken} = require('../db/tokenStorage')
+
+const registerLimit = rateLimit({
+	windowMs: 60 * 60 * 1000, // 60 minutes
+	max: 3, // Limit each IP to 3 requests per `window` (here, per 15 minutes)
+    message:
+		'Too many accounts were created during a short spam of time',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    skipFailedRequests: true,
+})
+
+const loginLimit = rateLimit({
+	windowMs: 15 * 60 * 1000, // 60 minutes
+	max: 5, // Limit each IP to 3 requests per `window` (here, per 15 minutes)
+    message:
+		'Too many login attempts were done during a short period of time',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    skipFailedRequests: false,
+})
 
 router.post('/check', tokenChecker, async (req, res)=>{
     try{
@@ -43,7 +64,7 @@ router.post('/token', refreshTokenChecker, async (req, res)=>{
     }
 })
 
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimit, async (req, res) => {
     try {
         // console.log(req.body)
         const {firstName, lastName, email, password, confirmpassword,
@@ -79,7 +100,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimit, async (req, res) => {
     const {email, password} = req.body
     const schema = Joi.object({
         email:Joi.string().email({ minDomainSegments: 2}).required(),
