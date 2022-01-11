@@ -18,12 +18,16 @@ router.get("/", async (req, res)=>{
 
 router.get("/:productId", async (req, res)=>{
     try{
-    const product = await stripe.products.retrieve(req.params.productId)
+    const productPrice = await stripe.prices.retrieve(`price_${req.params.productId}`)
+
+    const product = await stripe.products.retrieve(productPrice.product)
     if(!product.active)
         return res.status(404).json({"message":"Product is not available at the moment"})
     
-    return res.json({"id":product.id, "active":product.active, "name":product.name,"description":product.description, "images":product.images, "metadata":product.metadata})
+    return res.json({"id":product.id.replace("prod_",""), "active":product.active, "name":product.name,"description":product.description, "images":product.images, "metadata":product.metadata,
+        "pricedata":{"id":productPrice.id.replace("price_",""),"active":productPrice.active, "product":productPrice.product.replace("prod_",""),"price":productPrice.unit_amount}})
     }catch(e){
+        console.log(e)
         if(e.raw.code === "resource_missing")
             return res.status(404).json({"message":"Product is not found"})
         return res.status(404).json({"message":"Something went wrong with fetching the product"})

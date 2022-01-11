@@ -19,14 +19,13 @@ const unlinkAsync = promisify(fs.unlink)
 const upload = multer({ dest: '../uploads/tmp/bigorders',
                     limits:{files:1, fileSize:1024*1024},
                     fileFilter: (req, file, cb)=>{
-                        console.log(file.mimetype)
                         if(allowedMimes.includes(file.mimetype.toLowerCase())){
                             cb(null,true)
                         }
                         if(!(allowedMimes.includes(file.mimetype.toLowerCase()))){
                             cb(new Error("File is not supported"))
                         } else{
-                            new Error
+                            new Error("something is wrong with file")
                         }
                     },
                     });
