@@ -1,5 +1,17 @@
+const rateLimit = require('express-rate-limit')
 const express = require('express')
 const router = express.Router()
+
+//rate limit settings
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 13, // Limit each IP to 13 requests per `window` (here, per 15 minutes)
+    message:
+		'Too many requests made to submit a big order',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    skipFailedRequests: true,
+})
 
 //custom files
 const bigorderSubmission = require('../db/bigorderSubmission')
@@ -34,6 +46,7 @@ const upload = multer({ dest: '../uploads/tmp/bigorders',
 let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
 
 router.use(tokenChecker)
+router.use('/upload',apiLimiter)
 
 // router.get('/', async (req,res)=>{
 //     const decodedJWT = req.decoded;
