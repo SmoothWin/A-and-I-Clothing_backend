@@ -101,7 +101,7 @@ router.post('/register', registerLimit, async (req, res) => {
 });
 
 router.post('/login', loginLimit, async (req, res) => {
-    const {email, password} = req.body
+    const {email, password, checked} = req.body
     const schema = Joi.object({
         email:Joi.string().email({ minDomainSegments: 2}).required(),
         password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
@@ -125,7 +125,7 @@ router.post('/login', loginLimit, async (req, res) => {
             await addRefreshToken(user.user.userId, refreshToken)
 
             res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION})
-            .cookie("tokenR", refreshToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.REFRESH_EXPIRATION})
+            .cookie("tokenR", refreshToken,(checked)?{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.REFRESH_EXPIRATION}:{httpOnly:true,secure:true,sameSite:"none"})
             .json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
             
         } else {
