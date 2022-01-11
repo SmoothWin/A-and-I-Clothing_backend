@@ -75,8 +75,7 @@ router.post('/register', async (req, res) => {
 
         return res.status(201).json(savedUser.result);
     } catch(e) {
-        console.log("\n"+e.message)
-        res.status(400).json({ message: "Error"});
+        res.status(400).json({ message: e.message});
     }
 });
 
@@ -113,7 +112,7 @@ router.post('/login', async (req, res) => {
         }
     } catch(e) {
         // console.log(e.message)
-        return res.status(400).json({message: "Invalid Credentials"})
+        return res.status(400).json({message: e.message})
     }
 });
 
@@ -124,6 +123,7 @@ router.post('/logout', async (req, res)=>{
         return res.cookie("token", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).cookie("tokenR", null, {maxAge:0, httpOnly:true, sameSite:'none', secure:true, path:"/"}).send()
     }catch(e){
         console.log(e)
+        res.status(401).json({message:"Logging out went wrong"})
     }
 })
 

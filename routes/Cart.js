@@ -22,7 +22,7 @@ router.post("/cart/add", async (req, res)=>{
 
         return res.json({"message":"Cart insertion successful"})
     }catch(e){
-        return res.status(400).json({"message":"Something went wrong with syncing cart data"})
+        return res.status(400).json({"message":e.message})
     }
     
 })
@@ -38,7 +38,7 @@ router.post("/cart/get", async (req, res)=>{
 
         return res.json(response)
     }catch(e){
-        return res.status(400).json({"message":"Something went wrong with syncing cart data"})
+        return res.status(400).json({"message":e.message})
     }
 })
 
