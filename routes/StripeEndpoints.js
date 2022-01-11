@@ -4,13 +4,20 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET)
 
 router.get("/", async (req, res)=>{
     try{
-        const productPrice = await stripe.prices.list((req.query.starting_after)?{starting_after:req.query.starting_after}:null)
-        const products = await stripe.products.list((req.query.starting_after)?{starting_after:req.query.starting_after}:null)
+        const starting_after = req.query.starting_after?.split("-")
+        console.log(starting_after)
         const changedList = []
+        const productPrice = await stripe.prices.list((starting_after)?{starting_after:`price_${starting_after[0]}`, limit:10}:null)
+        if(productPrice.data.length < 1)
+            return res.json({"products": changedList, "has_more":false})
+        console.log(productPrice)
+        const products = await stripe.products.list((starting_after)?{starting_after:`${starting_after[1]}`, limit:10}:null)
         products.data.forEach((x,k)=>{
             if(x.object === "product")
                 changedList.push({"id":x.id.replace("prod_",""), "active":x.active, "name":x.name,"description":x.description, "images":x.images, "metadata":x.metadata,
-                "pricedata":{"id":productPrice.data[k].id.replace("price_",""),"active":productPrice.data[k].active, "price":productPrice.data[k].unit_amount}})
+                "pricedata":{"id":productPrice.data[k].id.replace("price_",""),"active":productPrice.data[k].active,
+                "currency": productPrice.data[k].currency,
+                "price":productPrice.data[k].unit_amount, "price_string":productPrice.data[k].unit_amount_decimal}})
         })
         return res.json({"products": changedList, "has_more":productPrice.has_more})
     }catch(e){
@@ -28,7 +35,9 @@ router.get("/:productId", async (req, res)=>{
         return res.status(404).json({"message":"Product is not available at the moment"})
     
     return res.json({"id":product.id.replace("prod_",""), "active":product.active, "name":product.name,"description":product.description, "images":product.images, "metadata":product.metadata,
-        "pricedata":{"id":productPrice.id.replace("price_",""),"active":productPrice.active, "price":productPrice.unit_amount}})
+        "pricedata":{"id":productPrice.id.replace("price_",""),"active":productPrice.active,
+        "currency": productPrice.currency, 
+        "price":productPrice.unit_amount, "price_string":productPrice.unit_amount_decimal}})
     }catch(e){
         console.log(e)
         if(e.raw.code === "resource_missing")
