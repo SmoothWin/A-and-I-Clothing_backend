@@ -30,7 +30,7 @@ describe('Database insert user', () => {
             await insertUser(existingUser)
         }catch(e){
             expect(e.name).toBe("Error")
-            expect(e.message).toBe("Something went wrong")
+            expect(e.message).toBe("Something went wrong with registering the user")
         }
     })
     it('User values are empty', async () => {

@@ -18,7 +18,7 @@ function registerUser(user){
             }, userParamList
             , (err, result)=>{
             if(err){
-                return rej(new Error("Something went wront with registering the user"))
+                return rej(new Error("Something went wrong with registering the user"))
             }
                 return res({"result":"User is registered", "user": {"firstName":user.firstName, "lastName": user.lastName}, "error":false})
             })
@@ -39,7 +39,7 @@ function registerUser(user){
             , (err, result)=>{
             if(err){
                 // console.log(err)
-                return rej(new Error("Something went wront with fetching user info"))
+                return rej(new Error("Something went wrong with fetching user info"))
             }
             if(typeof result == "undefined"){
                 // console.log(err)
@@ -70,7 +70,7 @@ function getUser(email){
             , (err, result)=>{
             if(err){
                 // console.log(err)
-                return rej(new Error("Something went wront with fetching user info"))
+                return rej(new Error("Something went wrong with fetching user info"))
             }
             if(typeof result == "undefined"){
                 // console.log(err)

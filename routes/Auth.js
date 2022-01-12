@@ -23,6 +23,7 @@ const registerLimit = rateLimit({
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     skipFailedRequests: true,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:false,
 })
 
 const loginLimit = rateLimit({
@@ -32,7 +33,8 @@ const loginLimit = rateLimit({
 		'Too many login attempts were done during a short period of time',
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    skipFailedRequests: false,
+    skipFailedRequests: (process.env.TEST_ENVIRONMENT == "testing")?true:false,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:true,
 })
 
 router.post('/check', tokenChecker, async (req, res)=>{

@@ -24,7 +24,7 @@ describe('Database read user', () => {
             await getUser(email)
         }catch(e){
             expect(e.name).toBe("Error")
-            expect(e.message).toBe("Something went wrong")
+            expect(e.message).toBe("User is missing")
         }
     },timeout)
 })
