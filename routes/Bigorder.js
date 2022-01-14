@@ -44,7 +44,6 @@ const upload = multer({ dest: '../uploads/tmp/bigorders',
                     });
 
 
-let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
 
 router.use(tokenChecker)
 router.use('/upload',apiLimiter)
@@ -87,7 +86,7 @@ router.post('/upload', upload.single('file'), async (req, res)=>{
                     return res.status(400).send({"message":"Something is wrong with the file"})
                 }
                 // console.log(results.length)
-                message = await bigorderSubmission(dummyUserId, results.map(x => Object.values(x)))
+                message = await bigorderSubmission(decodedJWT?.userId, results.map(x => Object.values(x)))
                 console.log(message.result)
                 
                 console.log(results)

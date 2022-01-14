@@ -59,7 +59,8 @@ router.post('/token', refreshTokenChecker, async (req, res)=>{
                 role:decodedRJWT.role
             }, process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
 
-            return res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).send()
+            return res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION})
+            .json({"firstName":decodedRJWT.firstName, "lastName":decodedRJWT.lastName})
         }
     }catch(e){
         return res.status(400).json({message: "Invalid"})

@@ -11,7 +11,7 @@ async function insertBigOrders(userid, csvData){
             timeout: 10000
         }, [handledData], async (err, result)=>{
             if(err){
-                console.log(err.errno)
+                console.log(err)
                 return resolve({"result":err.errno, "error":true})
             }
             console.log(`Inserted ${handledData.length} rows of data`)

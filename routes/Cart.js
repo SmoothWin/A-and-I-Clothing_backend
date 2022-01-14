@@ -68,7 +68,7 @@ router.post("/cart/add", async (req, res)=>{
 
         //add/modify shopping cart in database using userId from decodedJWT
 
-        return res.json({"message":"Cart insertion successful"})
+        return res.json({"message":"Cart insertion successful", cart_data:JSON.stringify({items:filteredArray})})
     }catch(e){
         return res.status(400).json({"message":e.message})
     }
