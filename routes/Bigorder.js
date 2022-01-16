@@ -11,6 +11,7 @@ const apiLimiter = rateLimit({
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     skipFailedRequests: true,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:false,
 })
 
 //custom files
@@ -43,19 +44,9 @@ const upload = multer({ dest: '../uploads/tmp/bigorders',
                     });
 
 
-let dummyUserId = "1b55e0565af111ec99de0862662c2bec" //to remove in production
 
 router.use(tokenChecker)
 router.use('/upload',apiLimiter)
-
-// router.get('/', async (req,res)=>{
-//     const decodedJWT = req.decoded;
-//     if(decodedJWT.role)
-//         return res.status(200).send({"message":"User is allowed"});
-//     return res.status(401).send({"message":"Unauthorized access"});
-//                 // {"userId":result[0]["user_id"],"firstName":result[0]["first_name"],
-//                 //          "lastName": result[0]["last_name"], "role":result[0]["role"]}
-// })
 
 router.post('/upload', upload.single('file'), async (req, res)=>{
     const decodedJWT = req.decoded;
@@ -95,7 +86,7 @@ router.post('/upload', upload.single('file'), async (req, res)=>{
                     return res.status(400).send({"message":"Something is wrong with the file"})
                 }
                 // console.log(results.length)
-                message = await bigorderSubmission(dummyUserId, results.map(x => Object.values(x)))
+                message = await bigorderSubmission(decodedJWT?.userId, results.map(x => Object.values(x)))
                 console.log(message.result)
                 
                 console.log(results)

@@ -23,6 +23,7 @@ const registerLimit = rateLimit({
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     skipFailedRequests: true,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:false,
 })
 
 const loginLimit = rateLimit({
@@ -32,7 +33,8 @@ const loginLimit = rateLimit({
 		'Too many login attempts were done during a short period of time',
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    skipFailedRequests: false,
+    skipFailedRequests: (process.env.TEST_ENVIRONMENT == "testing")?true:false,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:true,
 })
 
 router.post('/check', tokenChecker, async (req, res)=>{
@@ -57,7 +59,8 @@ router.post('/token', refreshTokenChecker, async (req, res)=>{
                 role:decodedRJWT.role
             }, process.env.TOKEN_SECRET,{expiresIn:process.env.TOKEN_EXPIRATION})
 
-            return res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION}).send()
+            return res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION})
+            .json({"firstName":decodedRJWT.firstName, "lastName":decodedRJWT.lastName})
         }
     }catch(e){
         return res.status(400).json({message: "Invalid"})
@@ -101,7 +104,7 @@ router.post('/register', registerLimit, async (req, res) => {
 });
 
 router.post('/login', loginLimit, async (req, res) => {
-    const {email, password} = req.body
+    const {email, password, checked} = req.body
     const schema = Joi.object({
         email:Joi.string().email({ minDomainSegments: 2}).required(),
         password:Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
@@ -125,7 +128,7 @@ router.post('/login', loginLimit, async (req, res) => {
             await addRefreshToken(user.user.userId, refreshToken)
 
             res.cookie("token", accessToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.TOKEN_EXPIRATION})
-            .cookie("tokenR", refreshToken,{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.REFRESH_EXPIRATION})
+            .cookie("tokenR", refreshToken,(checked)?{httpOnly:true,secure:true,sameSite:"none", maxAge:process.env.REFRESH_EXPIRATION}:{httpOnly:true,secure:true,sameSite:"none"})
             .json({"message":"Welcome", firstName:user.user.firstName, lastName:user.user.lastName});
             
         } else {

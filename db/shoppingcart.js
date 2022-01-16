@@ -10,7 +10,7 @@ async function addToCart(userid, cartData){
             timeout: 10000
         }, [userid, cartData], async (err, result)=>{
             if(err){
-                console.log(err.errno)
+                // console.log(err.errno)
                 con.query({
                     sql:'UPDATE '+
                         `${table} set cart_data = ? WHERE user_id = ?`,
@@ -35,7 +35,7 @@ async function getCartDataByUserId(userid){
         }, [userid],
         (err, result)=>{
             if(err){
-                return rej(new Error("Something went wront with fetching cart data"))
+                return rej(new Error("Something went wrong with fetching cart data"))
             }
             if(typeof result == "undefined"){
                 return rej(new Error("Cart is missing"))

@@ -18,7 +18,7 @@ function registerUser(user){
             }, userParamList
             , (err, result)=>{
             if(err){
-                return rej(new Error("Something went wront with registering the user"))
+                return rej(new Error("Something went wrong with registering the user"))
             }
                 return res({"result":"User is registered", "user": {"firstName":user.firstName, "lastName": user.lastName}, "error":false})
             })
@@ -33,13 +33,13 @@ function registerUser(user){
     const userLoginParamList = [id]
     return new Promise((res, rej)=>{con.query({ //done for testing purposes remove in production
             sql:
-            'SELECT first_name, last_name role FROM USERS WHERE user_id = ?',
+            'SELECT first_name, last_name FROM USERS WHERE user_id = ?',
             timeout:10000
             }, userLoginParamList
             , (err, result)=>{
             if(err){
                 // console.log(err)
-                return rej(new Error("Something went wront with fetching user info"))
+                return rej(new Error("Something went wrong with fetching user info"))
             }
             if(typeof result == "undefined"){
                 // console.log(err)
@@ -48,7 +48,7 @@ function registerUser(user){
             if(result.length < 1){
                 return rej(new Error("User is missing"))
             }
-            // console.log(result)
+            console.log(result[0])
             return res({
              "user": {"firstName":result[0]["first_name"],
              "lastName": result[0]["last_name"]}})
@@ -70,7 +70,7 @@ function getUser(email){
             , (err, result)=>{
             if(err){
                 // console.log(err)
-                return rej(new Error("Something went wront with fetching user info"))
+                return rej(new Error("Something went wrong with fetching user info"))
             }
             if(typeof result == "undefined"){
                 // console.log(err)

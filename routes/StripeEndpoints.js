@@ -10,7 +10,7 @@ router.get("/", async (req, res)=>{
         const productPrice = await stripe.prices.list((starting_after)?{starting_after:`price_${starting_after[0]}`, limit:10}:null)
         if(productPrice.data.length < 1)
             return res.json({"products": changedList, "has_more":false})
-        console.log(productPrice)
+        // console.log(productPrice)
         const products = await stripe.products.list((starting_after)?{starting_after:`${starting_after[1]}`, limit:10}:null)
         products.data.forEach((x,k)=>{
             if(x.object === "product")
@@ -21,7 +21,7 @@ router.get("/", async (req, res)=>{
         })
         return res.json({"products": changedList, "has_more":productPrice.has_more})
     }catch(e){
-        console.log(e)
+        // console.log(e)
         return res.status(404).json({"message":"Something went wrong with fetching the list of products"})
     }
 })
@@ -39,13 +39,13 @@ router.get("/:productId", async (req, res)=>{
         "currency": productPrice.currency, 
         "price":productPrice.unit_amount, "price_string":productPrice.unit_amount_decimal}})
     }catch(e){
-        console.log(e)
+        // console.log(e)
         if(e.raw.code === "resource_missing")
             return res.status(404).json({"message":"Product is not found"})
         return res.status(404).json({"message":"Something went wrong with fetching the product"})
     }
 })
-
+/* istanbul ignore next */
 router.post("/", async (req, res)=>{
     try{
         const ids = req.body.ids
