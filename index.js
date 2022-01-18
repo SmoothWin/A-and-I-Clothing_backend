@@ -16,7 +16,8 @@ const csrfMiddleware = csurf({
 const csrfchecker = require('./routes/csrfchecker')
 const bigOrderRoute = require('./routes/bigorder')
 const authRoute = require('./routes/Auth');
-const stripeRoute = require('./routes/StripeEndpoints')
+const stripeRoute = require('./routes/StripeGetProductEndpoints')
+const stripeCheckoutRoute = require("./routes/StripeCheckout")
 const cart = require('./routes/Cart')
 
 app.use(helmet())
@@ -30,6 +31,7 @@ app.use(csrfchecker)
 app.use(authRoute)
 app.use("/bigorders",bigOrderRoute)
 app.use("/v1/products",stripeRoute)
+app.use(stripeCheckoutRoute)
 app.use(cart)
 
 module.exports = app
