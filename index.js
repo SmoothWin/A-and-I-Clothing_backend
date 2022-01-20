@@ -18,6 +18,7 @@ const bigOrderRoute = require('./routes/bigorder')
 const authRoute = require('./routes/Auth');
 const stripeRoute = require('./routes/StripeGetProductEndpoints')
 const stripeCheckoutRoute = require("./routes/StripeCheckout")
+const stripeWebhook = require("./routes/StripeWebhook")
 const cart = require('./routes/Cart')
 
 app.use(helmet())
@@ -32,6 +33,7 @@ app.use(authRoute)
 app.use("/bigorders",bigOrderRoute)
 app.use("/v1/products",stripeRoute)
 app.use(stripeCheckoutRoute)
+app.use(stripeWebhook)
 app.use(cart)
 
 module.exports = app
