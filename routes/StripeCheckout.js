@@ -8,10 +8,24 @@ const easyTokenChecker = require("../middleware/easyTokenChecker")
 //custom db imports
 const {getUserEmail} = require('../db/authentication')
 
+
+router.get("/checkout/session", async (req, res)=>{
+    try{
+        const session = await stripe.checkout.sessions.retrieve(req.query?.id,
+            {
+                expand: ['line_items']
+            })
+        return res.json(session)
+    }catch(e){
+        console.log(e)
+        return res.status(400).json({message:"sessionId doesn't exist or has expired"})
+    }
+})
+
 router.post("/checkout", easyTokenChecker,async (req, res)=>{
     try{
         const decodedJWT = req.decoded
-        console.log(decodedJWT.userId)
+        console.log(decodedJWT?.userId)
 
         let dbResult = null
         if(decodedJWT)
@@ -29,7 +43,15 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
         })
         console.log(lineList)
 
-        const session = await stripe.checkout.sessions.create({
+        const session = await stripe.checkout.sessions.create((dbResult?.email)?
+        {
+            success_url: `${process.env.FRONTEND_URL}/success?id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+            payment_method_types:['card'],
+            mode:'payment',
+            line_items:lineList,
+            customer_email:dbResult.email
+        }:{
             success_url: `${process.env.FRONTEND_URL}/success?id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.FRONTEND_URL}/cancel`,
             payment_method_types:['card'],
@@ -40,7 +62,7 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
         res.json({id:session.id})
     }catch(e){
         console.log(e)
-        return res.status(400).json({"message":e.message})
+        return res.status(400).json({"message":"Something went wrong with checking out"})
     }
 })
 
