@@ -6,10 +6,10 @@ const endpointSecret = process.env.STRIPE_SECRET_WEBHOOK
 
 const bodyParser = require('body-parser');
 
-router.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
+router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (request, response) => {
 
     const sig = request.headers['stripe-signature'];
-    console.log(sig)
+    // console.log(sig)
     let event;
   
     try {
@@ -22,11 +22,20 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, re
   
     // Handle the event
     switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
-        console.log(paymentIntent)
-        // Then define and call a function to handle the event payment_intent.succeeded
-        break;
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        console.log(typeof session)
+        if(session.payment_status == 'paid'){
+          const sessionObject = await stripe.checkout.sessions.retrieve(session.id,
+            {
+                expand: ['line_items']
+            })
+          console.log(sessionObject.metadata)
+          console.log(sessionObject.line_items.data)
+          //do actions that will store/modify items quantity depending on different sizes.
+        }
+      // Then define and call a function to handle the event checkout.session.completed
+      break;
       // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
