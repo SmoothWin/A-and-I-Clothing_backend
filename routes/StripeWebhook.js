@@ -30,8 +30,8 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
             {
                 expand: ['line_items']
             })
-          console.log(sessionObject.metadata)
-          console.log(sessionObject.line_items.data)
+          console.log(sessionObject.metadata) //should store ordered quantities in metadata of the session object
+          console.log(sessionObject.line_items.data)//use the price and get the product ID in order to change specific item quantity
           //do actions that will store/modify items quantity depending on different sizes.
         }
       // Then define and call a function to handle the event checkout.session.completed
