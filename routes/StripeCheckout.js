@@ -25,23 +25,25 @@ router.get("/checkout/session", async (req, res)=>{
 router.post("/checkout", easyTokenChecker,async (req, res)=>{
     try{
         const decodedJWT = req.decoded
-        console.log(decodedJWT?.userId)
+        // console.log(decodedJWT?.userId)
 
         let dbResult = null
         if(decodedJWT)
             dbResult = await getUserEmail(decodedJWT.userId)
-            console.log(dbResult)
+            // console.log(dbResult)
         const {items} = req.body
         console.log(items)
 
         const lineList = []
+        const metadata = {}
         items.forEach((item)=>{
+            metadata[item.product_id] = JSON.stringify(item.category_quantities)
             lineList.push({
                 price: `price_${item.id}`,
                 quantity:item.tot_quantity
             })
         })
-        console.log(lineList)
+        console.log(metadata)
 
         const session = await stripe.checkout.sessions.create((dbResult?.email)?
         {
@@ -50,13 +52,16 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
             payment_method_types:['card'],
             mode:'payment',
             line_items:lineList,
-            customer_email:dbResult.email
+            customer_email:dbResult.email,
+            metadata:metadata
+
         }:{
             success_url: `${process.env.FRONTEND_URL}/success?id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.FRONTEND_URL}/cancel`,
             payment_method_types:['card'],
             mode:'payment',
-            line_items:lineList
+            line_items:lineList,
+            metadata:metadata
         })
 
         res.json({id:session.id})
