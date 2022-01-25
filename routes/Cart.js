@@ -25,9 +25,9 @@ const schema = Joi.object({
     quantity: Joi.number().min(1).required(),
 })
 
-const schema2itemQuantityMetaData =  Joi.number().min(0)
+const schema2itemQuantityMetaData =  Joi.number().min(0).required()
 
-const schema3itemQuantityCart = Joi.number().min(1).max(100)
+const schema3itemQuantityCart = Joi.number().min(1).max(100).required()
 
 
 router.post("/cart/add", async (req, res)=>{

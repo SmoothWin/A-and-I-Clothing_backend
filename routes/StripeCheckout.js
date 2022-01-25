@@ -2,13 +2,15 @@ const express = require('express')
 const router = express.Router()
 const stripe = require('stripe')(process.env.STRIPE_SECRET)
 
+const Joi = require('joi')
+
 //custom middleware imports
 const easyTokenChecker = require("../middleware/easyTokenChecker")
 
 //custom db imports
 const {getUserEmail} = require('../db/authentication')
-const { array } = require('joi')
 
+const orderCheck = Joi.number().min(1).max(99).required()
 
 router.get("/checkout/session", async (req, res)=>{
     try{
@@ -79,16 +81,32 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
             dbResult = await getUserEmail(decodedJWT.userId)
             // console.log(dbResult)
         const {items} = req.body
-        console.log(items)
+        // console.log(items)
 
         const lineList = []
         const metadata = {}
+        let metadataCheck = {}
         items.forEach((item)=>{
-            metadata[item.product_id] = JSON.stringify(item.category_quantities)
-            lineList.push({
-                price: `${item.id}`,
-                quantity:item.tot_quantity
+
+            let itemQuantities = JSON.stringify(item.category_quantities)
+            // console.log(itemQuantities)
+            let isItGood = Object.entries(item.category_quantities).every(x=>{
+                if(!x[0].includes("_quantity")){
+                    return false
+                }
+                metadataCheck = orderCheck.validate(x[1])
+                if(metadataCheck.error)
+                    return false
+                return true  
             })
+            console.log(isItGood)
+            if (isItGood){
+                metadata[item.product_id] = itemQuantities
+                lineList.push({
+                    price: `${item.id}`,
+                    quantity:item.tot_quantity
+                })
+            }
         })
         console.log(metadata)
 
