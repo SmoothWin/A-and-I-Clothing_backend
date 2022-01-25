@@ -87,8 +87,35 @@ function getUser(email){
         })
  }
 
+ function getUserEmail(id){
+    const userLoginParamList = [id]
+    return new Promise((res, rej)=>{con.query({ //done for testing purposes remove in production
+            sql:
+            'SELECT email FROM USERS WHERE user_id = ?',
+            timeout:10000
+            }, userLoginParamList
+            , (err, result)=>{
+            if(err){
+                // console.log(err)
+                return rej(new Error("Something went wrong with fetching user info"))
+            }
+            if(typeof result == "undefined"){
+                // console.log(err)
+                return rej(new Error("User is missing"))
+            }
+            if(result.length < 1){
+                return rej(new Error("User is missing"))
+            }
+            // console.log(result)
+            return res({"email":result[0]["email"], "error":false})
+            })
+        })
+ }
+
+
 module.exports = {
     insertUser:registerUser,
     getUserInfo:getUser,
-    getUserById: getUserById
+    getUserById: getUserById,
+    getUserEmail:getUserEmail
 }
