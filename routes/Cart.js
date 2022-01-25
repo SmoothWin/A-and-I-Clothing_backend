@@ -25,6 +25,10 @@ const schema = Joi.object({
     quantity: Joi.number().min(1).required(),
 })
 
+const schema2itemQuantityMetaData =  Joi.number().min(0)
+
+const schema3itemQuantityCart = Joi.number().min(1).max(100)
+
 
 router.post("/cart/add", async (req, res)=>{
     try{
@@ -54,11 +58,41 @@ router.post("/cart/add", async (req, res)=>{
                 pd_price_string:item.pricedata.price_string,
                 quantity:item.quantity,
             })
-            if(!result.error)
+            let metadataCheck = {}
+            let orderQuantitiesCheck = {}
+            // console.log(item)
+            Object.entries(item).every(x=>{
+
+                if(x[0] == "metadata"){
+                    Object.entries(x[1]).every(metaQty=>{
+                        metadataCheck = schema2itemQuantityMetaData.validate(metaQty[1])
+                        if(metadataCheck.error)
+                            return false
+                        return true
+                    })
+                }
+                if(x[0].includes("_quantity")){
+                    console.log(x[0]+" "+x[1])
+                    orderQuantitiesCheck = schema3itemQuantityCart.validate(x[1])
+                    console.log(orderQuantitiesCheck)
+                    if(orderQuantitiesCheck.error)
+                        return false
+                    return true
+                }
+
+            })
+            if(!result.error && !metadataCheck.error && !orderQuantitiesCheck.error)
                 filteredArray.push(item)
             else{
-                
+
+                console.log("result.error")
                 console.log(result.error)
+                console.log("metadataCheck.error")
+
+                console.log(metadataCheck.error)
+                console.log("orderQuantitiesCheck.error")
+
+                console.log(orderQuantitiesCheck.error)
             }
 
         });
