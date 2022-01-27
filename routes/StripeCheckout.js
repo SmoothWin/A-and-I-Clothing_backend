@@ -86,29 +86,50 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
         const lineList = []
         const metadata = {}
         let metadataCheck = {}
+        const listOfCartItems = items.map(x=>{return {id:x.id, product_id:x.product_id}})
+        const marketItems = await stripe.products
+                            .list({limit:100,ids:listOfCartItems.map(x=>x.product_id)})
+                            // console.log(marketItems.data)
         items.forEach((item)=>{
-
-            let itemQuantities = JSON.stringify(item.category_quantities)
-            // console.log(itemQuantities)
-            let isItGood = Object.entries(item.category_quantities).every(x=>{
-                if(!x[0].includes("_quantity")){
-                    return false
+            let itemValid = false
+            // console.log(item)
+            marketItems.data.forEach(checkItem =>{
+                if(item.product_id == checkItem.id){
+                    Object.entries(checkItem.metadata).forEach(type=>{
+                        if(typeof item.category_quantities[type[0]] != 'undefined')
+                            itemValid = item.category_quantities[type[0]] > 0
+                    })
                 }
-                metadataCheck = orderCheck.validate(x[1])
-                if(metadataCheck.error)
-                    return false
-                return true  
+
             })
-            console.log(isItGood)
-            if (isItGood){
-                metadata[item.product_id] = itemQuantities
-                lineList.push({
-                    price: `${item.id}`,
-                    quantity:item.tot_quantity
+            console.log(itemValid)
+            if(itemValid){
+                let itemQuantities = JSON.stringify(item.category_quantities)
+                // console.log(itemQuantities)
+                let isItGood = Object.entries(item.category_quantities).every(x=>{
+                    if(!x[0].includes("_quantity")){
+                        return false
+                    }
+                    metadataCheck = orderCheck.validate(x[1])
+                    if(metadataCheck.error)
+                        return false
+                    return true  
                 })
+                // console.log(isItGood)
+                if (isItGood){
+                    if(Object.values(JSON.parse(itemQuantities)).length > 0){
+                        metadata[item.product_id] = itemQuantities
+                        lineList.push({
+                            price: `${item.id}`,
+                            quantity:item.tot_quantity
+                        })
+                    }
+                }
             }
         })
-        console.log(metadata)
+        // console.log(metadata)
+        console.log(lineList)
+        
 
         const session = await stripe.checkout.sessions.create((dbResult?.email)?
         {
@@ -132,7 +153,7 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
         res.json({id:session.id})
     }catch(e){
         console.log(e)
-        return res.status(400).json({"message":"Something went wrong with checking out"})
+        return res.status(400).json({"message":"No stocked items were present for the checkout"})
     }
 })
 
