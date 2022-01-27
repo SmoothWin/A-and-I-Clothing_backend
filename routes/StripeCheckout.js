@@ -91,19 +91,7 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
                             .list({limit:100,ids:listOfCartItems.map(x=>x.product_id)})
                             // console.log(marketItems.data)
         items.forEach((item)=>{
-            let itemValid = false
-            // console.log(item)
-            marketItems.data.forEach(checkItem =>{
-                if(item.product_id == checkItem.id){
-                    Object.entries(checkItem.metadata).forEach(type=>{
-                        if(typeof item.category_quantities[type[0]] != 'undefined')
-                            itemValid = item.category_quantities[type[0]] > 0
-                    })
-                }
-
-            })
-            console.log(itemValid)
-            if(itemValid){
+            
                 let itemQuantities = JSON.stringify(item.category_quantities)
                 // console.log(itemQuantities)
                 let isItGood = Object.entries(item.category_quantities).every(x=>{
@@ -118,17 +106,39 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
                 // console.log(isItGood)
                 if (isItGood){
                     if(Object.values(JSON.parse(itemQuantities)).length > 0){
+                        let itemValid = {}
+                        // console.log(item)
+                        marketItems.data.forEach(checkItem =>{
+                            if(item.product_id == checkItem.id){
+                                Object.entries(checkItem.metadata).forEach(type=>{
+                                    if(typeof item.category_quantities[type[0]] != 'undefined'){
+                                        itemValid[type[0]] = (item.category_quantities[type[0]] < checkItem.metadata[type[0]] 
+                                                        && item.category_quantities[type[0]] > 0)
+                                    }
+                                }) 
+                            }
+
+                        })
+                        let itemObject = JSON.parse(itemQuantities)
+                        let quantitiesRemoved = 0 //value to track removed total item count for the incomming check
+                        Object.entries(itemValid).forEach(x=>{
+                            if(x[1] == false){
+                                quantitiesRemoved += itemObject[x[0]]
+                                delete itemObject[x[0]]
+                            }
+                        })
+                        itemQuantities = JSON.stringify(itemObject)
                         metadata[item.product_id] = itemQuantities
                         lineList.push({
                             price: `${item.id}`,
-                            quantity:item.tot_quantity
+                            quantity:item.tot_quantity - quantitiesRemoved
                         })
                     }
                 }
-            }
+            
         })
         // console.log(metadata)
-        console.log(lineList)
+        // console.log(lineList)
         
 
         const session = await stripe.checkout.sessions.create((dbResult?.email)?
