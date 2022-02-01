@@ -14,7 +14,7 @@ const csrfMiddleware = csurf({
 
 //Routes
 const csrfchecker = require('./routes/csrfchecker')
-const bigOrderRoute = require('./routes/bigorder')
+const bigOrderRoute = require('./routes/Bigorder')
 const authRoute = require('./routes/Auth');
 const stripeRoute = require('./routes/StripeGetProductEndpoints')
 const stripeCheckoutRoute = require("./routes/StripeCheckout")
