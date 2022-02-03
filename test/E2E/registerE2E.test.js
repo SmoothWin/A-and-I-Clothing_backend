@@ -1,5 +1,5 @@
 const con = require('../../db/connection')
-const User = require('../../db/models/User')
+const User = require('../../db/models/user')
 
 const timeout = 40000;
 

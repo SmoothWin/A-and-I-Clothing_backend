@@ -14,12 +14,12 @@ const csrfMiddleware = csurf({
 
 //Routes
 const csrfchecker = require(__dirname+'/routes/csrfchecker')
-const bigOrderRoute = require(__dirname+'/routes/Bigorder')
-const authRoute = require(__dirname+'/routes/Auth');
-const stripeRoute = require(__dirname+'/routes/StripeGetProductEndpoints')
-const stripeCheckoutRoute = require(__dirname+"/routes/StripeCheckout")
-const stripeWebhook = require(__dirname+"/routes/StripeWebhook")
-const cart = require(__dirname+'/routes/Cart')
+const bigOrderRoute = require(__dirname+'/routes/bigorder')
+const authRoute = require(__dirname+'/routes/auth');
+const stripeRoute = require(__dirname+'/routes/stripeGetProductEndpoints')
+const stripeCheckoutRoute = require(__dirname+"/routes/stripeCheckout")
+const stripeWebhook = require(__dirname+"/routes/stripeWebhook")
+const cart = require(__dirname+'/routes/cart')
 
 app.use(helmet())
 app.use('/webhook', express.raw({type: "*/*"}))
