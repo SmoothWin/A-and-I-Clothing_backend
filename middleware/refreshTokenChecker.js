@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 //db imports
-const {getRefreshToken} = require('../db/tokenStorage')
+const {getRefreshToken} = require(__dirname+'/../db/tokenStorage')
 
 module.exports = (req,res,next) => {
   try{

@@ -7,13 +7,13 @@ const jwt = require('jsonwebtoken')
 const Joi = require('joi')
 
 //custom imports
-const User = require('../db/models/user')
-const tokenChecker = require('../middleware/tokenChecker')
-const refreshTokenChecker = require('../middleware/refreshTokenChecker')
+const User = require(__dirname+'/../db/models/user')
+const tokenChecker = require(__dirname+'/../middleware/tokenChecker')
+const refreshTokenChecker = require(__dirname+'/../middleware/refreshTokenChecker')
 
 //db call imports
-const authentication = require('../db/authentication')
-const {addRefreshToken} = require('../db/tokenStorage')
+const authentication = require(__dirname+'/../db/authentication')
+const {addRefreshToken} = require(__dirname+'/../db/tokenStorage')
 
 const registerLimit = rateLimit({
 	windowMs: 60 * 60 * 1000, // 60 minutes

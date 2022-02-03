@@ -2,10 +2,10 @@ const express = require('express')
 const router = express.Router()
 
 //middleware
-const tokenChecker = require('../middleware/tokenChecker')
+const tokenChecker = require(__dirname+'/../middleware/tokenChecker')
 
 //db modules
-const cart = require('../db/shoppingcart')
+const cart = require(__dirname+'/../db/shoppingcart')
 
 router.use(tokenChecker)
 

@@ -1,4 +1,4 @@
-const con = require('./connection')
+const con = require(__dirname+'/connection')
 
 const table = "shopping_cart";
 async function addToCart(userid, cartData){

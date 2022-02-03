@@ -1,5 +1,5 @@
 require('dotenv').config()
-const app = require('./index')
+const app = require(__dirname+'/index')
 const port = process.env.SERVER_PORT
 
 app.listen(port, ()=>{
