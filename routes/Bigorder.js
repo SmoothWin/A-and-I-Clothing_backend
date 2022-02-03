@@ -15,8 +15,8 @@ const apiLimiter = rateLimit({
 })
 
 //custom files
-const bigorderSubmission = require('../db/bigorderSubmission')
-const tokenChecker = require('../middleware/tokenChecker')
+const bigorderSubmission = require(__dirname+'/../db/bigorderSubmission')
+const tokenChecker = require(__dirname+'/../middleware/tokenChecker')
 const multer = require('multer')
 
 const csv = require('csv-parser')
@@ -29,7 +29,7 @@ const allowedMimes = ['text/csv','application/vnd.ms-excel',
                 'text/comma-separated-values', 'text/x-comma-separated-values']
 
 const unlinkAsync = promisify(fs.unlink)
-const upload = multer({ dest: '../tmp/uploads/tmp/bigorders',
+const upload = multer({ dest: __dirname+'/../tmp/uploads/tmp/bigorders',
                     limits:{files:1, fileSize:1024*1024},
                     fileFilter: (req, file, cb)=>{
                         if(allowedMimes.includes(file.mimetype.toLowerCase())){

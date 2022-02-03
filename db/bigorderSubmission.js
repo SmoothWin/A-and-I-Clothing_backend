@@ -1,4 +1,4 @@
-const con = require('./connection')
+const con = require(__dirname+'/connection')
 
 const table = "big_orders";
 async function insertBigOrders(userid, csvData){

@@ -1,5 +1,5 @@
-const User = require('../db/models/user')
-const con = require('./connection')
+const User = require(__dirname+'/../db/models/user')
+const con = require(__dirname+'/connection')
 
 /**
  * @param {User} user The user object

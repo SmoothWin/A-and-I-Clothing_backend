@@ -5,10 +5,10 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET)
 const Joi = require('joi')
 
 //custom middleware imports
-const easyTokenChecker = require("../middleware/easyTokenChecker")
+const easyTokenChecker = require(__dirname+"/../middleware/easyTokenChecker")
 
 //custom db imports
-const {getUserEmail} = require('../db/authentication')
+const {getUserEmail} = require(__dirname+'/../db/authentication')
 
 const orderCheck = Joi.number().min(1).max(99).required()
 
