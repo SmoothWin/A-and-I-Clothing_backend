@@ -1,4 +1,4 @@
-const User = require(__dirname+'/../db/models/user')
+const User = require(__dirname+'/../db/models/User')
 const con = require(__dirname+'/connection')
 
 /**
