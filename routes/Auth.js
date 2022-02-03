@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const Joi = require('joi')
 
 //custom imports
-const User = require(__dirname+'/../db/models/user')
+const User = require(__dirname+'/../db/models/User')
 const tokenChecker = require(__dirname+'/../middleware/tokenChecker')
 const refreshTokenChecker = require(__dirname+'/../middleware/refreshTokenChecker')
 
