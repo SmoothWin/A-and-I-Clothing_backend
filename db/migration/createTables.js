@@ -1,4 +1,4 @@
-const con = require(__dirname+'/../connection')
+const con = require('../connection')
 
 con.connect(function(err) {
     if (err) throw err;
@@ -74,20 +74,5 @@ con.connect(function(err) {
             console.log("Table 'shopping_cart' created")
             }
         })
-      con.query({ //done for testing purposes remove in production
-        sql:
-        'INSERT INTO USERS(user_id, first_name, last_name, email, password, role, phone_country_code,'+
-                'phone_number, address, building_number, city, country, postal_code, organization_name)'+
-                ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        timeout:10000
-        }, ["1b55e0565af111ec99de0862662c2bec","DummyFN", "DummyLN", "email@email.com", "strongpassword123",
-         "customer", "1","4444444444", "115 element", null, "A city", "A country", "2j3mkj", null, ]
-         , (err, result)=>{
-           if(err){
-              console.log("Dummy user already exists")
-           }else{
-             console.log("Dummy user created")
-           }
-         })
       con.end();
   });
