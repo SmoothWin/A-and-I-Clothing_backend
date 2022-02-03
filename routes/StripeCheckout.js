@@ -112,7 +112,7 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
                             if(item.product_id == checkItem.id){
                                 Object.entries(checkItem.metadata).forEach(type=>{
                                     if(typeof item.category_quantities[type[0]] != 'undefined'){
-                                        itemValid[type[0]] = (item.category_quantities[type[0]] < checkItem.metadata[type[0]] 
+                                        itemValid[type[0]] = (item.category_quantities[type[0]] <= checkItem.metadata[type[0]] 
                                                         && item.category_quantities[type[0]] > 0)
                                     }
                                 }) 
