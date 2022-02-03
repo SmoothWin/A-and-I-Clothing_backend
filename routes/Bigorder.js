@@ -29,7 +29,7 @@ const allowedMimes = ['text/csv','application/vnd.ms-excel',
                 'text/comma-separated-values', 'text/x-comma-separated-values']
 
 const unlinkAsync = promisify(fs.unlink)
-const upload = multer({ dest: '../uploads/tmp/bigorders',
+const upload = multer({ dest: '../tmp/uploads/tmp/bigorders',
                     limits:{files:1, fileSize:1024*1024},
                     fileFilter: (req, file, cb)=>{
                         if(allowedMimes.includes(file.mimetype.toLowerCase())){
