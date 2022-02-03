@@ -1,7 +1,7 @@
 const con = require('../../db/connection')
 
 const createTestTables = require('../../db/migration/createTablesTest')
-const User = require('../../db/models/User')
+const User = require('../../db/models/user')
 const insertUser = require('../../db/authentication').insertUser
 
 const existingUser = new User(null, "Ch", "Ch", "email5@a.com", "dummypassword123$",

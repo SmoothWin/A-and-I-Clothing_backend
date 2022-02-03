@@ -1,6 +1,6 @@
 const timeout = 15000;
 const createTestTables = require('../../db/migration/createTablesTest')
-const User = require('../../db/models/User')
+const User = require('../../db/models/user')
 const getUser = require('../../db/authentication').getUserInfo
 
 let email = "email5@a.com"
