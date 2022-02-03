@@ -11,6 +11,7 @@ const csrfMiddleware = csurf({
     cookie: {
       sameSite:'none',
       // domain:(process.env.FRONTEND_URL.includes("http://")?process.env.FRONTEND_URL.replace("http://",""):process.env.FRONTEND_URL.replace("https://",""))
+      secure:true
     }
   });
 
