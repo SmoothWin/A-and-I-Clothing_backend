@@ -160,6 +160,12 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
             metadata:metadata
         })
 
+        setTimeout(async ()=>{
+            await stripe.checkout.sessions.expire(
+                session.id
+            )
+        }, 20000)
+
         res.json({id:session.id})
     }catch(e){
         console.log(e)
