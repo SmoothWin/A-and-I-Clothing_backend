@@ -160,11 +160,19 @@ router.post("/checkout", easyTokenChecker,async (req, res)=>{
             metadata:metadata
         })
 
+        //remove item quantity
+
         setTimeout(async ()=>{
-            await stripe.checkout.sessions.expire(
-                session.id
-            )
-        }, 20000)
+            try{
+                await stripe.checkout.sessions.expire(
+                    session.id
+                )
+                //add item quantity back in this section
+            }
+            catch(e){
+
+            }
+        }, 900000)//15 minutes
 
         res.json({id:session.id})
     }catch(e){
