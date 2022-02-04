@@ -20,6 +20,7 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
       return;
     }
   
+    console.log(event.type)
     // Handle the event
     switch (event.type) {
       case 'checkout.session.completed':
@@ -36,6 +37,9 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
         }
       // Then define and call a function to handle the event checkout.session.completed
       break;
+      case 'checkout.session.expired':
+        console.log(event.data.object.payment_status)
+        break;
       // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
