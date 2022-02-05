@@ -212,7 +212,8 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
             catch(e){
 
             }
-        }, 900000)//15 minutes
+        // }, 900000)//15 minutes
+        }, 20000)
 
         res.json({id:session.id})
     }catch(e){

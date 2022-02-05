@@ -23,22 +23,23 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
     console.log(event.type)
     // Handle the event
     switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object;
-        console.log(session.payment_status)
-        if(session.payment_status == 'paid'){
-          const sessionObject = await stripe.checkout.sessions.retrieve(session.id,
-            {
-                expand: ['line_items']
-            })
-          // console.log(sessionObject.metadata) //should store ordered quantities in metadata of the session object
-          // console.log(sessionObject.line_items.data)//use the price and get the product ID in order to change specific item quantity
-          //do actions that will store/modify items quantity depending on different sizes.
-        }
-      // Then define and call a function to handle the event checkout.session.completed
-      break;
+      // case 'checkout.session.completed':
+      //   const session = event.data.object;
+      //   console.log(session.payment_status)
+      //   if(session.payment_status == 'paid'){
+      //     const sessionObject = await stripe.checkout.sessions.retrieve(session.id,
+      //       {
+      //           expand: ['line_items']
+      //       })
+      //     // console.log(sessionObject.metadata) //should store ordered quantities in metadata of the session object
+      //     // console.log(sessionObject.line_items.data)//use the price and get the product ID in order to change specific item quantity
+      //     //do actions that will store/modify items quantity depending on different sizes.
+      //   }
+      // // Then define and call a function to handle the event checkout.session.completed
+      // break;
       case 'checkout.session.expired':
-        console.log(event.data.object.payment_status)
+        const session = event.data.object;
+        console.log(session)
         break;
       // ... handle other event types
       default:
