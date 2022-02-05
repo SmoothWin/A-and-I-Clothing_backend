@@ -20,7 +20,7 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
       return;
     }
   
-    console.log(event.type)
+    // console.log(event.type)
     // Handle the event
     switch (event.type) {
       // case 'checkout.session.completed':
@@ -39,7 +39,31 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
       // break;
       case 'checkout.session.expired':
         const session = event.data.object;
-        console.log(session)
+        const products = await stripe.products.list({limit:100,ids:Object.keys(session.metadata)})
+        const marketItems = products
+        const metadata = session.metadata
+        let quantityModified = {}
+        marketItems.data.forEach(x=>{
+          Object.entries(metadata).forEach(m=>{
+              if(m[0] == x.id){
+                  Object.entries(JSON.parse(m[1])).forEach(cQty=>{
+                      // console.log("Key: "+cQty[0])
+                      // console.log("Substract Qty: "+cQty[1])
+                      // console.log("Original Qty: "+ x.metadata[cQty[0]])
+                      // console.log(x.metadata[cQty[0]]-cQty[1])
+                      quantityModified[m[0]] = {[cQty[0]]: x.metadata[cQty[0]]+cQty[1]}
+                  })
+              }
+          })
+          // console.log(x.metadata)
+      })
+      console.log(quantityModified)
+      Object.entries(quantityModified).forEach(async x=>{
+        await stripe.products.update(
+            x[0],
+            {metadata:x[1]}
+        )
+      })
         break;
       // ... handle other event types
       default:
