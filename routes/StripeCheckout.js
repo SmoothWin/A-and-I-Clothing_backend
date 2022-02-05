@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit')
 const express = require('express')
 const router = express.Router()
 const stripe = require('stripe')(process.env.STRIPE_SECRET)
@@ -11,6 +12,17 @@ const easyTokenChecker = require(__dirname+"/../middleware/easyTokenChecker")
 const {getUserEmail} = require(__dirname+'/../db/authentication')
 
 const orderCheck = Joi.number().min(1).max(99).required()
+
+const checkoutLimit = rateLimit({
+	windowMs: 60 * 1000, // 60 seconds
+	max: 1, // Limit each IP to 1 requests per `window` (here, per 1 minute)
+    message:
+		'Too many checkout requests at the same time',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    skipFailedRequests: true,
+    skipSuccessfulRequests:(process.env.TEST_ENVIRONMENT == "testing")?true:false,
+})
 
 router.get("/checkout/session", async (req, res)=>{
     try{
@@ -71,7 +83,7 @@ router.get("/checkout/session", async (req, res)=>{
     }
 })
 
-router.post("/checkout", easyTokenChecker,async (req, res)=>{
+router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
     try{
         const decodedJWT = req.decoded
         // console.log(decodedJWT?.userId)
