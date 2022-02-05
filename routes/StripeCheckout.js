@@ -17,7 +17,7 @@ const checkoutLimit = rateLimit({
 	windowMs: 60 * 1000, // 60 seconds
 	max: 1, // Limit each IP to 1 requests per `window` (here, per 1 minute)
     message:
-		'Too many checkout requests at the same time',
+		'Too many checkout requests, complete your already existing one or wait for a few minutes',
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     skipFailedRequests: true,
@@ -126,6 +126,8 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
                                     if(typeof item.category_quantities[type[0]] != 'undefined'){
                                         itemValid[type[0]] = (item.category_quantities[type[0]] <= checkItem.metadata[type[0]] 
                                                         && item.category_quantities[type[0]] > 0)
+                                                        console.log((item.category_quantities[type[0]] <= checkItem.metadata[type[0]] 
+                                                            && item.category_quantities[type[0]] > 0))
                                     }
                                 }) 
                             }
@@ -136,22 +138,42 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
                         Object.entries(itemValid).forEach(x=>{
                             if(x[1] == false){
                                 quantitiesRemoved += itemObject[x[0]]
+                                // console.log(itemObject[x[0]])
                                 delete itemObject[x[0]]
                             }
                         })
-                        itemQuantities = JSON.stringify(itemObject)
-                        metadata[item.product_id] = itemQuantities
-                        lineList.push({
-                            price: `${item.id}`,
-                            quantity:item.tot_quantity - quantitiesRemoved
-                        })
+                        if(Object.entries(itemObject).length > 0) {
+                            itemQuantities = JSON.stringify(itemObject)
+                            metadata[item.product_id] = itemQuantities
+                            lineList.push({
+                                price: `${item.id}`,
+                                quantity:item.tot_quantity - quantitiesRemoved
+                            })
+                        }
                     }
                 }
             
         })
-        // console.log(metadata)
-        // console.log(lineList)
-        
+        console.log(metadata)
+        console.log(lineList)
+        let quantityModified = {}
+        marketItems.data.forEach(x=>{
+            Object.entries(metadata).forEach(m=>{
+                if(m[0] == x.id){
+                    Object.entries(JSON.parse(m[1])).forEach(cQty=>{
+                        // console.log("Key: "+cQty[0])
+                        // console.log("Substract Qty: "+cQty[1])
+                        // console.log("Original Qty: "+ x.metadata[cQty[0]])
+                        // console.log(x.metadata[cQty[0]]-cQty[1])
+                        quantityModified[m[0]] = {[cQty[0]]: x.metadata[cQty[0]]-cQty[1]}
+                    })
+                }
+            })
+            // console.log(x.metadata)
+        })
+        // console.log(marketItems.data)
+        console.log(quantityModified)
+
 
         const session = await stripe.checkout.sessions.create((dbResult?.email)?
         {
@@ -173,6 +195,12 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
         })
 
         //remove item quantity
+        Object.entries(quantityModified).forEach(async x=>{
+            await stripe.products.update(
+                x[0],
+                {metadata:x[1]}
+            )
+        })
 
         setTimeout(async ()=>{
             try{
@@ -188,7 +216,7 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
 
         res.json({id:session.id})
     }catch(e){
-        console.log(e)
+        // console.log(e)
         return res.status(400).json({"message":"No stocked items were present for the checkout"})
     }
 })

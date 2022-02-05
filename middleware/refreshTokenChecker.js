@@ -10,6 +10,7 @@ module.exports = (req,res,next) => {
     if (token) {
       // verifies secret and checks exp
       jwt.verify(token, process.env.REFRESH_SECRET, async function(err, decoded) {
+        try{
           if (err) {
               return res.status(401).json({"error": true, "message": 'Unauthorized access.' });
           }
@@ -18,9 +19,18 @@ module.exports = (req,res,next) => {
         
         //verify if token is in database
         const dbReturn = await getRefreshToken(decoded.userId)
+        console.log(dbReturn)
+        
         if(dbReturn?.token != token)
           throw new Error("R Token expired")
         next();
+      }catch(e){
+        return res.status(403).send({
+            "error": true,
+            "message": e.message
+        });
+      }
+        
       });
     } else {
       // if there is no token
