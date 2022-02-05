@@ -5,9 +5,8 @@ async function insertBigOrders(userid, csvData){
     let handledData = csvData.map(x=>[userid].concat(x))
     const query = new Promise((resolve)=>{
         con.query({
-            sql:'INSERT INTO '+
-                `${table} (user_id, product, quantity, color, description_of_design)`+
-                ` VALUES ?`,
+            sql:`INSERT INTO 
+                ${table} (user_id, product, quantity, color, description_of_design) VALUES ?`,
             timeout: 10000
         }, [handledData], async (err, result)=>{
             if(err){
