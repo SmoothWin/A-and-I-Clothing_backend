@@ -51,7 +51,7 @@ router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (reque
                       // console.log("Substract Qty: "+cQty[1])
                       // console.log("Original Qty: "+ x.metadata[cQty[0]])
                       // console.log(x.metadata[cQty[0]]-cQty[1])
-                      quantityModified[m[0]] = {[cQty[0]]: x.metadata[cQty[0]]+cQty[1]}
+                      quantityModified[m[0]] = {[cQty[0]]: parseInt(x.metadata[cQty[0]])+parseInt(cQty[1])}
                   })
               }
           })
