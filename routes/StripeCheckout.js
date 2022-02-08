@@ -26,6 +26,8 @@ const checkoutLimit = rateLimit({
 
 router.get("/checkout/session", async (req, res)=>{
     try{
+        if(typeof req.query?.id === "undefined")
+            return res.status(400).json({message:"sessionId not provided"})
         const session = await stripe.checkout.sessions.retrieve(req.query?.id,
             {
                 expand: ['line_items']
@@ -37,7 +39,7 @@ router.get("/checkout/session", async (req, res)=>{
 
         const ids = Object.keys(metadata)
         const products = await stripe.products.list({limit:100,ids:ids})
-        console.log(products)
+        // console.log(products)
 
         const lineItems = line_items.data.map(x=>{
             return {
@@ -66,8 +68,6 @@ router.get("/checkout/session", async (req, res)=>{
             Object.values(secondaryQuantities).forEach(x=>{
                 Object.entries(x).forEach(value=>{
                     if(item.product_id == value[0]){
-
-                        console.log()
                         item["secondary_quantities"] = value[1]
                     }
                 })
@@ -78,7 +78,7 @@ router.get("/checkout/session", async (req, res)=>{
 
         return res.json({line_items:lineItems, status:status})
     }catch(e){
-        console.log(e)
+        // console.log(e)
         return res.status(400).json({message:"sessionId doesn't exist or has expired"})
     }
 })
@@ -93,7 +93,6 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
             dbResult = await getUserEmail(decodedJWT.userId)
             // console.log(dbResult)
         const {items} = req.body
-        // console.log(items)
 
         const lineList = []
         const metadata = {}
@@ -105,7 +104,7 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
         items.forEach((item)=>{
             
                 let itemQuantities = JSON.stringify(item.category_quantities)
-                // console.log(itemQuantities)
+                console.log(itemQuantities)
                 let isItGood = Object.entries(item.category_quantities).every(x=>{
                     if(!x[0].includes("_quantity")){
                         return false
@@ -213,7 +212,7 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
 
             }
         // }, 900000)//15 minutes
-        }, 20000)
+        }, (process.env.TEST_ENVIRONMENT == "testing")?5000:process.env.EXPIRE_COOLDOWN)
 
         res.json({id:session.id})
     }catch(e){

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const express = require('express')
 const router = express.Router()
 const stripe = require('stripe')(process.env.STRIPE_SECRET)
@@ -5,6 +6,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET)
 const endpointSecret = process.env.STRIPE_SECRET_WEBHOOK
 
 const bodyParser = require('body-parser');
+
+
+
 
 router.post('/webhook', bodyParser.raw({type: 'application/json'}), async (request, response) => {
 

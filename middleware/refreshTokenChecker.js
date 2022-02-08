@@ -41,6 +41,7 @@ module.exports = (req,res,next) => {
       });
     }
   }catch(e){
+    /* istanbul ignore next */
     return res.status(403).send({
         "error": true,
         "message": e.message
