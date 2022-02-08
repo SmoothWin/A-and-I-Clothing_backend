@@ -52,7 +52,7 @@ describe("/POST /token refresh api test and middleware test",()=>{
         const res = await request.post(url)
         .set({'csrf-token':csrf})
         .send()
-        console.log(res)
+        // console.log(res)
         expect(res.statusCode).toBe(403)
     })
 })

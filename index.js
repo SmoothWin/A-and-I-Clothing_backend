@@ -7,13 +7,17 @@ const helmet = require('helmet')
 
 const app = express()
 
-const csrfMiddleware = csurf({
+const csrfMiddleware = (process.env.TEST_ENVIRONMENT == "testing")?
+csurf({
+  cookie: true
+})
+:csurf({
     cookie: {
       sameSite:'none',
       httpOnly:true,
       secure:true
     }
-  });
+  })
 
 
 //Routes
