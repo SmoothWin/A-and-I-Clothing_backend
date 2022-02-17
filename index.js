@@ -12,7 +12,8 @@ const csrfMiddleware = csurf({
       sameSite:'none',
       httpOnly:true,
       secure:true
-    }
+    },
+    
   })
 
 
