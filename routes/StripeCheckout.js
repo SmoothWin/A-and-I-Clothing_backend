@@ -212,7 +212,7 @@ router.post("/checkout", [checkoutLimit,easyTokenChecker],async (req, res)=>{
 
             }
         // }, 900000)//15 minutes
-        }, (process.env.TEST_ENVIRONMENT == "testing")?5000:process.env.EXPIRE_COOLDOWN)
+        }, (process.env.TEST_ENVIRONMENT == "testing")?90000:process.env.EXPIRE_COOLDOWN)
 
         res.json({id:session.id})
     }catch(e){
