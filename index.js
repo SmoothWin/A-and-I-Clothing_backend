@@ -7,13 +7,16 @@ const helmet = require('helmet')
 
 const app = express()
 
-const csrfMiddleware = csurf({
+const csrfMiddleware = (process.env.TEST_ENVIRONMENT == "testing")?
+csurf({
+  cookie: true
+})
+:csurf({
     cookie: {
       sameSite:'none',
       httpOnly:true,
       secure:true
-    },
-    
+    }
   })
 
 
@@ -33,7 +36,7 @@ app.use(express.urlencoded({extended: true,limit:'4mb'}))
 app.use(cors({origin:process.env.FRONTEND_URL, credentials:true}));
 app.use(cookieParser())
 app.use(stripeWebhook)
-app.use(csrfMiddleware);
+// app.use(csrfMiddleware);
 //endpoints
 app.use(csrfchecker)
 app.use(authRoute)
