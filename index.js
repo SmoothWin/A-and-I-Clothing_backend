@@ -15,7 +15,7 @@ csurf({
     cookie: {
       sameSite:'none',
       httpOnly:true,
-      secure:true
+      secure:true,
     }
   })
 
